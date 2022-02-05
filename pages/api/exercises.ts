@@ -12,21 +12,26 @@ export default async function handler(
   // Find the categories
   const category = req.query?.category;
   console.log(category);
-  // Construct the category object
-  let whereobj: Prisma.ExerciseWhereInput = {};
-  if (typeof category === "string") {
-    whereobj = {
-      exercise_base: {
-        category: {
-          name: category,
-        },
-      },
-    };
-  }
+  const muscles = req.query?.muscles;
+  // Construct the where object - using the category as filter
+  const whereobj: Prisma.ExerciseWhereInput =
+    typeof category === "string" && category !== "All"
+      ? {
+          exercise_base: {
+            category: {
+              name: category,
+            },
+            // muscles:{
+            //   some:{
+            //     [{name:''}]
+            //   }
+            // }
+          },
+        }
+      : {};
 
   const includeobj = {
     licence: true,
-    language: true,
     exercise_base: {
       include: { category: true, muscles: true, equipment: true },
     },
