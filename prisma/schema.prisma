@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id               Int                @id @default(autoincrement())
+  name             String
+  ExerciseBaseData ExerciseBaseData[]
+}
+
+model DayOfWeek {
+  id          Int    @id @default(autoincrement())
+  day_of_week String
+}
+
+model Equipment {
+  id                 Int               @id @default(autoincrement())
+  name               String
+  ExerciseBaseData   ExerciseBaseData? @relation(fields: [exerciseBaseDataId], references: [id])
+  exerciseBaseDataId Int?
+}
+
+model Language {
+  id         Int        @id @default(autoincrement())
+  full_name  String
+  short_name String
+  Exercise   Exercise[]
+}
+
+model Licence {
+  id               Int                @id @default(autoincrement())
+  full_name        String
+  short_name       String
+  url              String
+  Exercise         Exercise[]
+  ExerciseBaseData ExerciseBaseData[]
+}
+
+model Exercise {
+  id                 Int              @id @default(autoincrement())
+  licence            Licence          @relation(fields: [licenceId], references: [id])
+  licenceId          Int
+  license_author     String
+  name               String
+  name_original      String
+  status             String
+  description        String
+  creation_date      DateTime
+  language           Language         @relation(fields: [languageId], references: [id])
+  languageId         Int
+  uuid               String           @db.Uuid
+  exercise_base      ExerciseBaseData @relation(fields: [exerciseBaseDataId], references: [id])
+  exerciseBaseDataId Int
+}
+
+model Muscles {
+  id                 Int               @id @default(autoincrement())
+  is_front           Boolean           @default(true)
+  name               String
+  ExerciseBaseData   ExerciseBaseData? @relation("MuscleExercise", fields: [exerciseBaseDataId], references: [id])
+  exerciseBaseDataId Int?
+  // ExerciseBaseData_secondary   ExerciseBaseData? @relation("SecondaryExercise", fields: [exerciseBaseDataId], references: [id])
+  // exerciseBaseDataId_secondary Int?
+}
+
+model ExerciseBaseData {
+  id             Int         @id @default(autoincrement())
+  license        Licence     @relation(fields: [licenceId], references: [id])
+  licenceId      Int
+  license_author String
+  status         String
+  uuid           String
+  category       Category    @relation(fields: [categoryId], references: [id])
+  categoryId     Int
+  variations     String?
+  muscles        Muscles[]   @relation("MuscleExercise")
+  equipment      Equipment[]
+  // muscles_secondary Muscles[]   @relation("SecondaryExercise")
+  Exercise       Exercise[]
+}
+
+model RepetitionUnits {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model WeightUnits {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  firstname String
+  lastname  String
+  age       Int
+  posts     Post[]
+  profile   Profile?
+}
