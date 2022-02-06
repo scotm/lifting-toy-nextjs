@@ -2613,19 +2613,6 @@
     "exercise_base": 632
   },
   {
-    "id": 619,
-    "license": 2,
-    "license_author": "csequino",
-    "status": "2",
-    "description": "<p>Bicipiti su panca a 45\u00b0. Il movimento deve essere completo</p>",
-    "name": "Curl su Panca a 45\u00b0",
-    "name_original": "Curl su panca a 45\u00b0",
-    "creation_date": "2018-11-27",
-    "language": 2,
-    "uuid": "b1133e95-a644-42e4-b109-38bda8bda278",
-    "exercise_base": 175
-  },
-  {
     "id": 626,
     "license": 2,
     "license_author": "arson",
