@@ -20,9 +20,9 @@ function getJSONFromFile(filename: string): any {
   return JSON.parse(rawdata.toString());
 }
 
-function writeToDB(data: [], model: any) {
+function writeToDB(data: [], prisma_client: any) {
   data.forEach(async (element: any) => {
-    await model.upsert({
+    await prisma_client.upsert({
       where: {
         id: element.id,
       },
@@ -34,9 +34,9 @@ function writeToDB(data: [], model: any) {
 
 async function main() {
   // fire in the simple stuff
-  for (const [filename, model] of Object.entries(pairings)) {
+  for (const [filename, prisma_client] of Object.entries(pairings)) {
     let json_data = getJSONFromFile(filename);
-    writeToDB(json_data, model);
+    writeToDB(json_data, prisma_client);
   }
 
   let exercisebaseids: number[];
@@ -60,7 +60,6 @@ async function main() {
       .catch((onrejected) => {
         console.log("Exception thrown on making many ExerciseBaseData objects");
         console.log(onrejected);
-        return 1;
       });
 
     json_data.forEach(async (e: any) => {

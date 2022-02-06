@@ -44,20 +44,22 @@ model Licence {
 }
 
 model Exercise {
-  id                 Int              @id @default(autoincrement())
-  licence            Licence          @relation(fields: [licenceId], references: [id])
-  licenceId          Int
-  license_author     String
-  name               String
-  name_original      String
-  status             String
-  description        String
-  creation_date      DateTime
-  language           Language         @relation(fields: [languageId], references: [id])
-  languageId         Int
-  uuid               String           @db.Uuid
-  exercise_base      ExerciseBaseData @relation(fields: [exerciseBaseDataId], references: [id])
-  exerciseBaseDataId Int
+  id                    Int                     @id @default(autoincrement())
+  licence               Licence                 @relation(fields: [licenceId], references: [id])
+  licenceId             Int
+  license_author        String
+  name                  String
+  name_original         String
+  status                String
+  description           String
+  creation_date         DateTime
+  language              Language                @relation(fields: [languageId], references: [id])
+  languageId            Int
+  uuid                  String                  @db.Uuid
+  exercise_base         ExerciseBaseData        @relation(fields: [exerciseBaseDataId], references: [id])
+  exerciseBaseDataId    Int
+  WorkoutPiece          WorkoutPiece[]
+  CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
 model Muscles {
@@ -86,13 +88,17 @@ model ExerciseBaseData {
 }
 
 model RepetitionUnits {
-  id   Int    @id @default(autoincrement())
-  name String
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  WorkoutPiece          WorkoutPiece[]
+  CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
 model WeightUnits {
-  id   Int    @id @default(autoincrement())
-  name String
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  WorkoutPiece          WorkoutPiece[]
+  CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
 model Post {
@@ -113,12 +119,62 @@ model Profile {
   userId Int     @unique
 }
 
+model CompletedWorkoutPiece {
+  id                Int             @id @default(autoincrement())
+  completed_on      DateTime        @default(now())
+  exercise          Exercise        @relation(fields: [exerciseId], references: [id])
+  reps              RepetitionUnits @relation(fields: [repetitionUnitsId], references: [id])
+  weight            WeightUnits     @relation(fields: [weightUnitsId], references: [id])
+  exerciseId        Int
+  repetitionUnitsId Int
+  weightUnitsId     Int
+  Workout           Workout         @relation(fields: [workoutId], references: [id])
+  workoutId         Int
+}
+
+model WorkoutPiece {
+  id                Int              @id @default(autoincrement())
+  exercise          Exercise         @relation(fields: [exerciseId], references: [id])
+  reps              RepetitionUnits  @relation(fields: [repetitionUnitsId], references: [id])
+  weight            WeightUnits      @relation(fields: [weightUnitsId], references: [id])
+  exerciseId        Int
+  repetitionUnitsId Int
+  weightUnitsId     Int
+  WorkoutTemplate   WorkoutTemplate? @relation(fields: [workoutTemplateId], references: [id])
+  workoutTemplateId Int?
+  Workout           Workout?         @relation(fields: [workoutId], references: [id])
+  workoutId         Int?
+}
+
+// model CompletedWorkout{
+
+// }
+
+model Workout {
+  id                    Int                     @id @default(autoincrement())
+  user                  User                    @relation(fields: [userId], references: [id])
+  userId                Int
+  pieces                WorkoutPiece[]
+  CompletedWorkoutPiece CompletedWorkoutPiece[]
+}
+
+model WorkoutTemplate {
+  id     Int            @id @default(autoincrement())
+  name   String
+  user   User           @relation(fields: [userId], references: [id])
+  userId Int
+  pieces WorkoutPiece[]
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  firstname String
-  lastname  String
-  age       Int
-  posts     Post[]
-  profile   Profile?
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  auth_string     String
+  firstname       String
+  lastname        String
+  age             Int
+  posts           Post[]
+  profile         Profile?
+  WorkoutTemplate WorkoutTemplate[]
+  Workout         Workout[]
 }

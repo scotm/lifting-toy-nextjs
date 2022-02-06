@@ -2,7 +2,21 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, install the requirements
+
+```bash
+npm install
+```
+
+Connect Your Database
+
+Edit the .env file and change the DATABASE_URL config to suit your local setup
+
+```
+DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+```
+
+Next, run the development server:
 
 ```bash
 npm run dev
