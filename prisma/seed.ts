@@ -20,6 +20,18 @@ function getJSONFromFile(filename: string): any {
   return JSON.parse(rawdata.toString());
 }
 
+function writeToDB(data: [], model: any) {
+  data.forEach(async (element: any) => {
+    await model.upsert({
+      where: {
+        id: element.id,
+      },
+      update: {},
+      create: element,
+    });
+  });
+}
+
 async function main() {
   // fire in the simple stuff
   for (const [filename, model] of Object.entries(pairings)) {
@@ -29,11 +41,6 @@ async function main() {
 
   let exercisebaseids: number[];
   {
-    // await prisma.$executeRawUnsafe(
-    //   `TRUNCATE TABLE "ExerciseBaseData" CASCADE;`
-    // );
-    // await prisma.$executeRawUnsafe(`TRUNCATE TABLE "Exercise" CASCADE;`);
-
     let json_data = getJSONFromFile("exercise-base-data.json");
     exercisebaseids = json_data.map((e: any) => e.id);
     let data = json_data.map(
@@ -68,9 +75,7 @@ async function main() {
       let equip = e.equipment.map((x: any) => {
         return { id: x };
       });
-      // console.log("muscles:", m);
-      // console.log("equipment:", equip);
-      await prisma.exerciseBaseData.update({
+      const updateobj: Prisma.ExerciseBaseDataUpdateArgs = {
         where: {
           id: e.id,
         },
@@ -82,7 +87,10 @@ async function main() {
             connect: equip,
           },
         },
-      });
+      };
+      try {
+        await prisma.exerciseBaseData.update(updateobj);
+      } catch {}
     });
   }
 
@@ -121,15 +129,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-function writeToDB(data: [], model: any) {
-  data.forEach(async (element: any) => {
-    await model.upsert({
-      where: {
-        id: element.id,
-      },
-      update: {},
-      create: element,
-    });
-  });
-}

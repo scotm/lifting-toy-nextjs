@@ -22,10 +22,9 @@ model DayOfWeek {
 }
 
 model Equipment {
-  id                 Int               @id @default(autoincrement())
-  name               String
-  ExerciseBaseData   ExerciseBaseData? @relation(fields: [exerciseBaseDataId], references: [id])
-  exerciseBaseDataId Int?
+  id               Int                @id @default(autoincrement())
+  name             String
+  ExerciseBaseData ExerciseBaseData[]
 }
 
 model Language {
@@ -62,11 +61,10 @@ model Exercise {
 }
 
 model Muscles {
-  id                 Int               @id @default(autoincrement())
-  is_front           Boolean           @default(true)
-  name               String
-  ExerciseBaseData   ExerciseBaseData? @relation("MuscleExercise", fields: [exerciseBaseDataId], references: [id])
-  exerciseBaseDataId Int?
+  id               Int                @id @default(autoincrement())
+  is_front         Boolean            @default(true)
+  name             String
+  ExerciseBaseData ExerciseBaseData[]
   // ExerciseBaseData_secondary   ExerciseBaseData? @relation("SecondaryExercise", fields: [exerciseBaseDataId], references: [id])
   // exerciseBaseDataId_secondary Int?
 }
@@ -81,7 +79,7 @@ model ExerciseBaseData {
   category       Category    @relation(fields: [categoryId], references: [id])
   categoryId     Int
   variations     String?
-  muscles        Muscles[]   @relation("MuscleExercise")
+  muscles        Muscles[]
   equipment      Equipment[]
   // muscles_secondary Muscles[]   @relation("SecondaryExercise")
   Exercise       Exercise[]
