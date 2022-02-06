@@ -2,11 +2,12 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Accordion, Form } from "react-bootstrap";
+import { Accordion, Col, Container, Form, Row } from "react-bootstrap";
+import AccordionAdditional from "../../components/AccordionAdditional";
 
 export interface IShowExercisesProps {}
 
-// TOOD: replace this with an API call.
+// TOOD: replace this with an API call to /api/categories.
 const exercise_categories = [
   { id: 1, name: "All" },
   { id: 8, name: "Arms" },
@@ -18,19 +19,52 @@ const exercise_categories = [
   { id: 14, name: "Calves" },
 ];
 
+// TODO: replace this with an API call to /api/muscles.
+const muscles_to_check = [
+  { id: 1, name: "Biceps brachii" },
+  { id: 2, name: "Anterior deltoid" },
+  { id: 3, name: "Serratus anterior" },
+  { id: 4, name: "Pectoralis major" },
+  { id: 5, name: "Triceps brachii" },
+  { id: 6, name: "Rectus abdominis" },
+  { id: 7, name: "Gastrocnemius" },
+  { id: 8, name: "Gluteus maximus" },
+  { id: 9, name: "Trapezius" },
+  { id: 10, name: "Quadriceps femoris" },
+  { id: 11, name: "Biceps femoris" },
+  { id: 12, name: "Latissimus dorsi" },
+  { id: 13, name: "Brachialis" },
+  { id: 14, name: "Obliquus externus abdominis" },
+  { id: 15, name: "Soleus" },
+  { id: 16, name: "Erector spinae" },
+];
+
 interface ErrorMessage {
   message: string;
 }
 
 export default function ShowExercises(props: IShowExercisesProps) {
-  const [error, setError] = useState<ErrorMessage | undefined>(undefined);
-  const [category, setQuery] = useState("All");
+  // The search parameters state
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+
+  // API call state
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<ErrorMessage | undefined>(undefined);
   const [items, setItems] = useState(new Array());
 
+  // Hook: Force a call if category or search changes
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios(`/api/exercises?category=${category}`);
+      const result = await axios(
+        `/api/exercises?category=${category}${
+          search !== "" ? "&search=" + search : ""
+        }`
+      );
+
+      // TODO: Error handling
+
+      // Chuck the result into the items
       if (Array.isArray(result.data)) {
         setItems(result.data);
         setLoaded(true);
@@ -38,7 +72,7 @@ export default function ShowExercises(props: IShowExercisesProps) {
     };
 
     fetchData();
-  }, [category]);
+  }, [category, search]);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -47,27 +81,62 @@ export default function ShowExercises(props: IShowExercisesProps) {
   } else {
     return (
       <>
-        <Form.Select
-          name="exercise_choice"
-          onChange={(event) => setQuery(event.target.value)}
-          defaultValue={category}
-        >
-          {exercise_categories.map((e) => {
-            return <option key={e.id}>{e.name}</option>;
-          })}
-        </Form.Select>
-        <Accordion defaultActiveKey="0">
-          {items.map((e) => {
-            return (
-              <Accordion.Item key={e.id} eventKey={e.id}>
-                <Accordion.Header>{e.name}</Accordion.Header>
-                <Accordion.Body
-                  dangerouslySetInnerHTML={{ __html: e.description }}
-                ></Accordion.Body>
-              </Accordion.Item>
-            );
-          })}
-        </Accordion>
+        <Container>
+          <Row>
+            <Col>
+              <h1>Exercise Picker</h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Select
+                name="exercise_choice"
+                onChange={(e) => setCategory(e.target.value)}
+                defaultValue={category}
+              >
+                {exercise_categories.map((e) => {
+                  return <option key={e.id}>{e.name}</option>;
+                })}
+              </Form.Select>
+            </Col>
+            <Col>
+              <Form.Control
+                type="text"
+                placeholder="Search"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Accordion>
+            {items.map((e) => {
+              return (
+                <Accordion.Item key={e.id} eventKey={e.id}>
+                  <Accordion.Header>{e.name}</Accordion.Header>
+                  <Accordion.Body>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: e.description }}
+                    ></div>
+                    <hr />
+                    <Row>
+                      <Col>
+                        <AccordionAdditional
+                          precursor="Muscles Used: "
+                          named={e.exercise_base.muscles}
+                        ></AccordionAdditional>
+                      </Col>
+                      <Col>
+                        <AccordionAdditional
+                          precursor="Equipment: "
+                          named={e.exercise_base.equipment}
+                        ></AccordionAdditional>
+                      </Col>
+                    </Row>
+                  </Accordion.Body>
+                </Accordion.Item>
+              );
+            })}
+          </Accordion>
+        </Container>
       </>
     );
   }
