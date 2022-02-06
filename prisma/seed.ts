@@ -4,6 +4,27 @@ import * as fs from "fs";
 
 const prisma = new PrismaClient();
 
+// const prisma = new PrismaClient({
+//   log: [
+//     {
+//       emit: "stdout",
+//       level: "query",
+//     },
+//     {
+//       emit: "stdout",
+//       level: "error",
+//     },
+//     {
+//       emit: "stdout",
+//       level: "info",
+//     },
+//     {
+//       emit: "stdout",
+//       level: "warn",
+//     },
+//   ],
+// });
+
 let pairings = {
   "licenses.json": prisma.licence,
   "categories.json": prisma.category,
@@ -119,6 +140,31 @@ async function main() {
       console.log(onrejected);
     });
   }
+
+  // Get all the table names and reset their autocounters
+  type tablename_type = { table_name: string };
+
+  const tablenames = (await prisma.$queryRaw`SELECT table_name FROM 
+    information_schema.tables 
+    WHERE table_schema='public' 
+    AND table_type='BASE TABLE';`) as Array<tablename_type>;
+
+  const tables = tablenames
+    .map((e) => e.table_name)
+    .filter((e) => e[0] !== "_");
+
+  // I'm only using values extracted from the DB itself -
+  // so injection risk is low, but worth fixing once the Prisma single-quotes
+  // bug is fixed upstream.
+  tables.forEach(async (e) => {
+    // I need to use the single quotes in order to run the pg_get_serial_sequence function,
+    // And single quote usage is broken as of right now.
+    // https://github.com/prisma/prisma/discussions/9991
+    await prisma.$queryRawUnsafe(
+      `SELECT setval(pg_get_serial_sequence('"${e}"', 'id'), 
+      coalesce(max(id)+1, 1), false) FROM "${e}";`
+    );
+  });
 }
 
 main()
