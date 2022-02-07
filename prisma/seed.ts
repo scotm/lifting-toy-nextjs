@@ -4,27 +4,6 @@ import * as fs from "fs";
 
 const prisma = new PrismaClient();
 
-// const prisma = new PrismaClient({
-//   log: [
-//     {
-//       emit: "stdout",
-//       level: "query",
-//     },
-//     {
-//       emit: "stdout",
-//       level: "error",
-//     },
-//     {
-//       emit: "stdout",
-//       level: "info",
-//     },
-//     {
-//       emit: "stdout",
-//       level: "warn",
-//     },
-//   ],
-// });
-
 let pairings = {
   "licenses.json": prisma.licence,
   "categories.json": prisma.category,
@@ -123,7 +102,6 @@ async function main() {
     data = data.map((element: any): Prisma.ExerciseCreateManyInput => {
       return {
         id: element.id,
-        licenceId: element.license,
         license_author: element.license_author,
         name: element.name,
         name_original: element.name_original,
@@ -131,6 +109,7 @@ async function main() {
         description: element.description,
         creation_date: new Date(element.creation_date),
         uuid: element.uuid,
+        licenceId: element.license,
         languageId: element.language,
         exerciseBaseDataId: element.exercise_base,
       };
@@ -142,6 +121,7 @@ async function main() {
   }
 
   // Get all the table names and reset their autocounters
+  // https://github.com/prisma/prisma/discussions/5256
   type tablename_type = { table_name: string };
 
   const tablenames = (await prisma.$queryRaw`SELECT table_name FROM 
@@ -153,7 +133,7 @@ async function main() {
     .map((e) => e.table_name)
     .filter((e) => e[0] !== "_");
 
-  // I'm only using values extracted from the DB itself -
+  // I'm only using table names extracted from the DB itself -
   // so injection risk is low, but worth fixing once the Prisma single-quotes
   // bug is fixed upstream.
   tables.forEach(async (e) => {

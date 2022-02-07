@@ -19,8 +19,9 @@ export default async function handler(
 
   // Construct the where object - using the category as filter
   const whereobj: Prisma.ExerciseWhereInput = {};
-
+  let category_chosen = false;
   if (typeof category === "string" && category !== "All") {
+    category_chosen = true;
     whereobj.exercise_base = {
       category: {
         name: category,
@@ -28,12 +29,28 @@ export default async function handler(
     };
   }
 
-  // Case-insensitive search
+  // Case-insensitive search - look inside equipment and muscles
   if (search !== undefined) {
-    whereobj.name = {
-      contains: search,
-      mode: "insensitive",
-    };
+    whereobj.OR = [
+      {
+        name: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+      {
+        exercise_base: {
+          equipment: {
+            some: {
+              name: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      },
+    ];
   }
 
   // Pull in related data
