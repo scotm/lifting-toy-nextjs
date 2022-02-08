@@ -32,7 +32,7 @@ export default function ShowExercises(props: IShowExercisesProps) {
             setCategory={setCategory}
             setSearch={setSearch}
           />
-          <ExerciseList items={data} />
+          <ExerciseList exercises={data} />
         </>
       ) : null}
     </Layout>

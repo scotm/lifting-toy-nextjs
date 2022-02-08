@@ -16,7 +16,7 @@ export default function ExerciseListHeader(props: IExerciseListHeaderProps) {
       </div>
       <div className="text-center">
         <input
-          className="w-full border-2 border-solid"
+          className="m-2 w-full border-2 border-solid border-slate-800"
           type="text"
           placeholder="Filter exercises"
           onChange={(e) => setSearch(e.target.value)}

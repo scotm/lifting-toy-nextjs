@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Category, Muscles } from "@prisma/client";
+import { useGetCategoriesQuery } from "../services/exercise";
 
 const muscles_to_check: Array<Muscles> = [
   { id: 1, is_front: true, name: "Biceps brachii" },
@@ -32,35 +33,29 @@ export default function ExerciseCategorySelect(
   const { category, setCategory } = props;
   const initialCategory: Category = { id: 1, name: "All" };
 
-  // Setup component state
-  const [exercise_categories, setCategories] = useState<Array<Category>>([
-    initialCategory,
-  ]);
+  // API call effect
+  const {
+    data: exercise_categories,
+    error,
+    isLoading,
+  } = useGetCategoriesQuery();
 
-  // Hook: Populate the categories
-  useEffect(() => {
-    async function fetchData() {
-      const result = await axios(`/api/categories`);
-
-      // TODO: Error handling
-      setCategories(
-        Array.isArray(result.data) ? result.data : [initialCategory]
-      );
-    }
-    fetchData();
-  });
-  return (
-    <>
-      <select
-        className="m-2 w-full"
-        name="exercise_choice"
-        onChange={(event) => setCategory(event.target.value)}
-        defaultValue={category}
-      >
-        {exercise_categories.map((category) => (
-          <option key={category.id}>{category.name}</option>
-        ))}
-      </select>
-    </>
-  );
+  if (exercise_categories !== undefined) {
+    return (
+      <>
+        <select
+          className="m-2 w-full border-2 border-slate-800 p-0.5"
+          name="exercise_choice"
+          onChange={(event) => setCategory(event.target.value)}
+          defaultValue={initialCategory.id}
+        >
+          {exercise_categories.map((category) => (
+            <option key={category.id}>{category.name}</option>
+          ))}
+        </select>
+      </>
+    );
+  } else {
+    return null;
+  }
 }
