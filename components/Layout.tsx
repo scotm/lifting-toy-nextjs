@@ -7,6 +7,8 @@ export interface IAppProps {
   title?: string;
 }
 
+// React.FC<IAppProps> = ({ title, children })
+
 export default function Layout(props: IAppProps) {
   return (
     <>
@@ -16,8 +18,8 @@ export default function Layout(props: IAppProps) {
           {props.title ?? "Default Title"}
         </h1>
         {props.children}
+        <Footer></Footer>
       </div>
-      <Footer></Footer>
     </>
   );
 }
