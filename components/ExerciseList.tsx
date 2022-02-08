@@ -1,6 +1,7 @@
 import * as React from "react";
 import ExerciseAdditional from "./ExerciseAdditional";
 import { PencilAltIcon } from "@heroicons/react/outline";
+import Link from "next/link";
 
 export interface IExerciseListProps {
   items: any[];
@@ -15,7 +16,9 @@ export default function ExerciseList(props: IExerciseListProps) {
           <div key={e.id} className="p-4">
             <h3 className="text-3xl font-bold">{e.name}</h3>
             <p>
-              <PencilAltIcon className="h-5 w-5 text-blue-500" />{" "}
+              <Link href={`/exercises/edit/${e.id}`} passHref={true}>
+                <PencilAltIcon className="h-5 w-5 text-blue-500" />
+              </Link>
             </p>
             <div>
               <div dangerouslySetInnerHTML={{ __html: e.description }}></div>

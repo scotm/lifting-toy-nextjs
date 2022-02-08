@@ -11,8 +11,8 @@ export default function Layout(props: IAppProps) {
   return (
     <>
       <Navbar />
-      <div className="mx-auto">
-        <h1 className="text-center text-xl">
+      <div className="mx-auto mt-8">
+        <h1 className="text-center text-4xl font-extrabold">
           {props.title ?? "Default Title"}
         </h1>
         {props.children}

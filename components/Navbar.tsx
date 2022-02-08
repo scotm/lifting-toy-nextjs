@@ -26,7 +26,7 @@ export default function Navbar(props: INavbarProps) {
             </div>
             <div className="hidden items-center space-x-1 md:flex">
               <Link href="/" passHref>
-                <span className="border-b-4 border-green-500 py-4 px-2 font-semibold text-green-500 ">
+                <span className="py-4 px-2 font-semibold text-green-500 underline">
                   Home
                 </span>
               </Link>
