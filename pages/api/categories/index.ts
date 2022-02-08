@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { Category, PrismaClient } from "@prisma/client";
 import parseIDfrombody from "../../../util/parseIDfrombody";
 
 const prisma = new PrismaClient();
@@ -22,11 +22,20 @@ export default async function handler(
     return res.status(200).send("Success!");
   }
 
-  return res.status(200).json(
-    await prisma.category.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    })
-  );
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  // Find "All" and put it at the top.
+  const key = (e: Category) => e.name === "All";
+  const piece = categories.find(key);
+  if (piece !== undefined) {
+    const index = categories.findIndex(key);
+
+    categories.splice(index, 1);
+    categories.unshift(piece);
+  }
+  return res.status(200).json(categories);
 }
