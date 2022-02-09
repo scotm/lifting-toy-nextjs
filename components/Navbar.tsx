@@ -6,8 +6,8 @@ export interface INavbarProps {}
 
 export default function Navbar(props: INavbarProps) {
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="mx-auto max-w-6xl px-4">
+    <nav className="bg-slate-800 shadow-lg">
+      <div className="mx-auto max-w-5xl px-4">
         <div className="flex justify-between">
           <div className="flex space-x-7">
             <div>
@@ -16,28 +16,28 @@ export default function Navbar(props: INavbarProps) {
                   src="/logo.png"
                   alt="Lifting Logo"
                   className="mr-2 h-8 w-8"
-                  width="64"
-                  height="64"
+                  width="80"
+                  height="80"
                 />
               </div>
-              <span className="text-lg font-semibold text-gray-500">
-                Lifting
-              </span>
             </div>
             <div className="hidden items-center space-x-1 md:flex">
+              <span className="py-4 px-2 text-lg font-semibold text-gray-100">
+                Lifting
+              </span>
               <Link href="/" passHref>
                 <span className="py-4 px-2 font-semibold text-green-500 underline">
                   Home
                 </span>
               </Link>
               <Link href="/exercises" passHref>
-                <span className="py-4 px-2 font-semibold text-gray-500 transition duration-300 hover:text-green-500">
+                <span className="py-4 px-2 font-semibold text-gray-100 transition duration-300 hover:text-green-500">
                   Exercises
                 </span>
               </Link>
               <a
                 href=""
-                className="py-4 px-2 font-semibold text-gray-500 transition duration-300 hover:text-green-500"
+                className="py-4 px-2 font-semibold text-gray-100 transition duration-300 hover:text-green-500"
               >
                 Contact Us
               </a>
@@ -46,7 +46,7 @@ export default function Navbar(props: INavbarProps) {
           {/* <div className="hidden items-center space-x-3 md:flex ">
             <a
               href=""
-              className="rounded py-2 px-2 font-medium text-gray-500 transition duration-300 hover:bg-green-500 hover:text-white"
+              className="rounded py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white"
             >
               Log In
             </a>
@@ -67,7 +67,7 @@ export default function Navbar(props: INavbarProps) {
               }}
             >
               <svg
-                className=" h-6 w-6 text-gray-500 hover:text-green-500 "
+                className=" h-6 w-6 text-gray-100 hover:text-green-500 "
                 x-show="!showMenu"
                 fill="none"
                 strokeLinecap="round"
