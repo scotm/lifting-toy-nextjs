@@ -11,7 +11,15 @@ export default async function handler(
   if (req.method === "GET") {
     const result = await prisma.exercise.findUnique({
       where: {
-        id: parseID(req),
+        id: parseID(req.query.id),
+      },
+
+      // Pull in related data
+      include: {
+        licence: true,
+        exercise_base: {
+          include: { category: true, muscles: true, equipment: true },
+        },
       },
     });
     if (!result) {
