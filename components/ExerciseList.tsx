@@ -1,18 +1,9 @@
+import { PencilAltIcon } from "@heroicons/react/outline";
+import { Exercise } from "@prisma/client";
+import Link from "next/link";
 import * as React from "react";
 import ExerciseAdditional from "./ExerciseAdditional";
-import { PencilAltIcon } from "@heroicons/react/outline";
-import Link from "next/link";
-import { Equipment, Exercise, ExerciseBaseData, Muscles } from "@prisma/client";
-
-interface MyExerciseBaseData extends ExerciseBaseData {
-  muscles?: Muscles[];
-  equipment?: Equipment[];
-}
-
-interface MyExercise extends Exercise {
-  id: number;
-  exercise_base?: MyExerciseBaseData;
-}
+import type { MyExercise } from "../types/ExerciseTypes";
 
 export interface IExerciseListProps {
   exercises: Exercise[];
