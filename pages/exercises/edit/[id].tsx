@@ -1,102 +1,162 @@
 import { useRouter } from "next/router";
 import Layout from "../../../components/Layout";
 import {
-  Category,
-  Exercise,
-  ExerciseBaseData,
-  Language,
-  Licence,
-} from "@prisma/client";
-import { useEffect, useState } from "react";
-import axios from "axios";
+  useGetCategoriesQuery,
+  useGetExerciseByIdQuery,
+  useGetLanguagesQuery,
+  useGetLicencesQuery,
+  useGetMusclesQuery,
+} from "../../../services/exercise";
+import { MyExercise } from "../../../types/ExerciseTypes";
 
 const EditExercise = () => {
   const router = useRouter();
-  const id = router.query.id;
-  const [languages, setLanguages] = useState<Array<Language>>([]);
-  const [licences, setLicences] = useState<Array<Licence>>([]);
-  const [exercise, setExercise] = useState<Exercise | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loaded, setLoaded] = useState<boolean>(false);
-  // Hook: Force a call if category or search changes
-  useEffect(() => {
-    const p1 = axios(`/api/languages`).then((result) => {
-      if (Array.isArray(result.data)) {
-        setLanguages(result.data);
-      }
-    });
-    const p2 = axios(`/api/licences`).then((result) => {
-      if (Array.isArray(result.data)) {
-        setLicences(result.data);
-      }
-    });
-    const p3 = axios(`/api/exercise/${id}`).then((result) => {
-      const exercisedata = result.data as Exercise;
-      setExercise(exercisedata);
-    });
-    const p4 = axios(`/api/categories`).then((result) => {
-      if (Array.isArray(result.data)) {
-        setCategories(result.data);
-      }
-    });
 
-    // All queries have completed?
-    Promise.all([p1, p2, p3, p4]).then(() => {
-      setLoaded(true);
-    });
-  });
+  const { data: e } = useGetExerciseByIdQuery(router.query.id);
+  const { data: languages } = useGetLanguagesQuery();
+  const { data: licences } = useGetLicencesQuery();
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: muscles } = useGetMusclesQuery();
 
-  // Chuck the result into the items
-  type Exercise = {
-    id: number;
-    licenceId: number;
-    license_author: string;
-    name: string;
-    name_original: string;
-    status: string;
-    description: string;
-    creation_date: Date;
-    languageId: number;
-    uuid: string;
-    exerciseBaseDataId: number;
-  };
-
-  // If the useEffect promises haven't completed yet
+  // If the queries haven't completed yet
   if (
-    languages === [] ||
-    licences === [] ||
-    exercise === null ||
-    loaded === false
+    e === undefined ||
+    languages === undefined ||
+    licences === undefined ||
+    categories === undefined ||
+    muscles === undefined
   ) {
     return <>Loading...</>;
   } else {
+    const exercise = e as MyExercise;
+    console.log(exercise.exercise_base?.categoryId);
     return (
-      <Layout>
+      <Layout title={`Editing ${exercise.name}`}>
         <form>
           <input type="hidden" name="id" value={router.query.id} />
-          <input type="text" name="name" value={exercise.name} />
-          <input
-            type="text"
-            name="name_original"
-            value={exercise.name_original}
-          />
-          <input type="text" name="status" value={exercise.status} />
-          <textarea name="description">{exercise.description}</textarea>
-          <select name="licenceID" defaultValue={exercise.licenceId}>
-            {licences.map((e) => {
-              <option key={e.id}>{e.short_name}</option>;
-            })}
-          </select>
-          <select name="licenceId" defaultValue={exercise.languageId}>
-            {languages.map((e) => {
-              <option key={e.id}>{e.full_name}</option>;
-            })}
-          </select>
-          <input
-            type="text"
-            name="licence_author"
-            value={exercise.license_author}
-          />
+          <div className="grid grid-cols-4 gap-4 py-4">
+            <label className="text-lg font-bold" htmlFor="exercise_name">
+              Exercise Name
+            </label>
+            <input
+              className="col-span-3 rounded-xl shadow-xl"
+              type="text"
+              name="name"
+              value={exercise.name}
+              id="exercise_name"
+            />
+            <label className="text-lg font-bold" htmlFor="exercise_categoryId">
+              Category
+            </label>
+            <select
+              className="col-span-3 rounded-xl shadow-xl"
+              id="exercise_categoryId"
+              name="categoryId"
+              defaultValue={exercise.exercise_base?.categoryId}
+            >
+              {categories.map((e) => {
+                return (
+                  <option key={e.id} value={e.id}>
+                    {e.name}
+                  </option>
+                );
+              })}
+            </select>
+
+            <label className="text-lg font-bold" htmlFor="exercise_description">
+              Description
+            </label>
+            <textarea
+              id="exercise_description"
+              name="description"
+              rows={10}
+              className="col-span-3 rounded-xl shadow-xl"
+              defaultValue={exercise.description}
+            ></textarea>
+
+            <label className="text-lg font-bold" htmlFor="exercise_licenceId">
+              Licence
+            </label>
+            <select
+              id="exercise_licenceId"
+              name="licenceID"
+              defaultValue={exercise.licenceId}
+              className="col-span-3 rounded-xl shadow-xl"
+            >
+              {licences.map((e) => {
+                return (
+                  <option value={e.id} key={e.id}>
+                    {e.full_name}
+                  </option>
+                );
+              })}
+            </select>
+
+            <label className="text-lg font-bold" htmlFor="exercise_languageId">
+              Language
+            </label>
+            <select
+              className="col-span-3 rounded-xl shadow-xl"
+              id="exercise_languageId"
+              name="languageId"
+              defaultValue={
+                languages.find((e) => e.full_name === "English")?.id ?? 1
+              }
+            >
+              {languages.map((e) => {
+                return (
+                  <option value={e.id} key={e.id}>
+                    {e.full_name}
+                  </option>
+                );
+              })}
+            </select>
+
+            <label
+              className="text-lg font-bold"
+              htmlFor="exercise_licence_author"
+            >
+              Author:
+            </label>
+            <input
+              className="col-span-3 rounded-xl shadow-xl"
+              id="exercise_licence_author"
+              type="text"
+              name="licence_author"
+              value={exercise.license_author}
+            />
+            <div className="text-lg font-bold">Muscles Used: </div>
+            <div className="col-span-3 rounded-xl bg-red-100 shadow-xl">
+              <div className="grid grid-cols-4">
+                {muscles.map((e) => {
+                  return (
+                    <>
+                      <label
+                        className="p-2 text-sm"
+                        htmlFor={`muscles_${e.id}`}
+                      >
+                        <input
+                          className="m-2"
+                          type="checkbox"
+                          name="muscles[]"
+                          value={e.id}
+                          key={e.id}
+                          id={`muscles_${e.id}`}
+                        />
+                        {e.name}
+                      </label>
+                    </>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="text-lg font-bold">Equipment: </div>
+            <div className="col-span-3 rounded-xl bg-red-100 shadow-xl"></div>
+            <div />
+            <button className="col-span-3 rounded-xl bg-red-500 p-2 text-white shadow-xl">
+              Submit
+            </button>
+          </div>
         </form>
       </Layout>
     );
