@@ -1,6 +1,13 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Category, Exercise, Language, Licence, Muscles } from "@prisma/client";
+import {
+  Category,
+  Equipment,
+  Exercise,
+  Language,
+  Licence,
+  Muscles,
+} from "@prisma/client";
 
 // Define a service using a base URL and expected endpoints
 
@@ -39,6 +46,9 @@ export const exerciseApi = createApi({
     getLanguages: builder.query<Array<Language>, void>({
       query: () => `languages`,
     }),
+    getEquipment: builder.query<Array<Equipment>, void>({
+      query: () => `equipment`,
+    }),
   }),
 });
 
@@ -51,4 +61,5 @@ export const {
   useGetLicencesQuery,
   useGetMusclesQuery,
   useGetLanguagesQuery,
+  useGetEquipmentQuery,
 } = exerciseApi;
