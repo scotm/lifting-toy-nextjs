@@ -1,6 +1,7 @@
-import { NextApiRequest } from "next";
-
-export default function parseID(req: NextApiRequest): number {
-  const { id } = req.query;
-  return Number.parseInt(Array.isArray(id) ? id[0] : id);
+export default function parseID(n: string[] | string | undefined): number {
+  if (n === undefined) {
+    return -1;
+  }
+  const result: number = Number.parseInt(Array.isArray(n) ? n[0] : n);
+  return result.toString() === n ? result : -1;
 }

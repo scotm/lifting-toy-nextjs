@@ -13,7 +13,6 @@ export default async function handler(
       where: {
         id: parseID(req.query.id),
       },
-
       // Pull in related data
       include: {
         licence: true,
@@ -26,7 +25,12 @@ export default async function handler(
       return res.status(404).send("Not Found");
     }
     return res.status(200).json(result);
+  } else if (req.method === "PUT") {
+    // Debugging
+    console.log(req.query);
   } else {
-    return res.status(501).send("Only the GET Method has been implemented");
+    return res
+      .status(501)
+      .send("Only the GET and PUT methods have been implemented");
   }
 }

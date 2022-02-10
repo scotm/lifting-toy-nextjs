@@ -2,7 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import parseIDfrombody from "../../../util/parseIDfrombody";
+import parseID from "../../../util/parseID";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +18,7 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    await prisma.equipment.delete({ where: { id: parseIDfrombody(req) } });
+    await prisma.equipment.delete({ where: { id: parseID(req.body.id) } });
     return res.status(200).send("Success!");
   }
 
