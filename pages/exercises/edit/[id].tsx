@@ -2,37 +2,54 @@ import { useRouter } from "next/router";
 import Layout from "../../../components/Layout";
 import {
   useGetCategoriesQuery,
+  useGetEquipmentQuery,
   useGetExerciseByIdQuery,
   useGetLanguagesQuery,
   useGetLicencesQuery,
   useGetMusclesQuery,
 } from "../../../services/exercise";
-import { MyExercise } from "../../../types/ExerciseTypes";
+
+// Post to the DB. *stub*
+function clickSubmit(event: React.MouseEvent<HTMLElement>): void {
+  event.preventDefault();
+  const d = document.getElementById("exerciseForm");
+  console.log(d);
+  // axios.put(event.)
+}
+
+// For pulling out the
+// Not sure how to define an any-like type which *definitely* has an id property
+function build_set(data_array: any[] | undefined): Set<number> {
+  return data_array !== undefined
+    ? new Set(data_array.map((e: any) => e.id))
+    : new Set([]);
+}
 
 const EditExercise = () => {
   const router = useRouter();
-
-  const { data: e } = useGetExerciseByIdQuery(router.query.id);
+  const { data: exercise } = useGetExerciseByIdQuery(router.query.id);
   const { data: languages } = useGetLanguagesQuery();
   const { data: licences } = useGetLicencesQuery();
   const { data: categories } = useGetCategoriesQuery();
   const { data: muscles } = useGetMusclesQuery();
+  const { data: equipment } = useGetEquipmentQuery();
 
-  // If the queries haven't completed yet
+  // If the queries haven't completed yet - wtf
   if (
-    e === undefined ||
+    exercise === undefined ||
     languages === undefined ||
     licences === undefined ||
     categories === undefined ||
-    muscles === undefined
+    muscles === undefined ||
+    equipment === undefined
   ) {
-    return <>Loading...</>;
+    return <Layout title="Editing ">Loading...</Layout>;
   } else {
-    const exercise = e as MyExercise;
-    console.log(exercise.exercise_base?.categoryId);
+    const muscles_checked = build_set(exercise.exercise_base?.muscles);
+    const equipment_checked = build_set(exercise.exercise_base?.equipment);
     return (
       <Layout title={`Editing ${exercise.name}`}>
-        <form>
+        <form id="exerciseForm">
           <input type="hidden" name="id" value={router.query.id} />
           <div className="grid grid-cols-4 gap-4 py-4">
             <label className="text-lg font-bold" htmlFor="exercise_name">
@@ -45,6 +62,7 @@ const EditExercise = () => {
               value={exercise.name}
               id="exercise_name"
             />
+
             <label className="text-lg font-bold" htmlFor="exercise_categoryId">
               Category
             </label>
@@ -125,35 +143,65 @@ const EditExercise = () => {
               name="licence_author"
               value={exercise.license_author}
             />
+
             <div className="text-lg font-bold">Muscles Used: </div>
             <div className="col-span-3 rounded-xl bg-red-100 shadow-xl">
               <div className="grid grid-cols-4">
                 {muscles.map((e) => {
                   return (
-                    <>
-                      <label
-                        className="p-2 text-sm"
-                        htmlFor={`muscles_${e.id}`}
-                      >
-                        <input
-                          className="m-2"
-                          type="checkbox"
-                          name="muscles[]"
-                          value={e.id}
-                          key={e.id}
-                          id={`muscles_${e.id}`}
-                        />
-                        {e.name}
-                      </label>
-                    </>
+                    <label
+                      key={e.id}
+                      className="p-2 text-sm"
+                      htmlFor={`muscles_${e.id}`}
+                    >
+                      <input
+                        className="m-2"
+                        type="checkbox"
+                        name="muscles[]"
+                        value={e.id}
+                        key={e.id}
+                        readOnly={true}
+                        checked={muscles_checked.has(e.id)}
+                        id={`muscles_${e.id}`}
+                      />
+                      {e.name}
+                    </label>
                   );
                 })}
               </div>
             </div>
+
             <div className="text-lg font-bold">Equipment: </div>
-            <div className="col-span-3 rounded-xl bg-red-100 shadow-xl"></div>
+            <div className="col-span-3 rounded-xl bg-red-100 shadow-xl">
+              <div className="grid grid-cols-4">
+                {equipment.map((e) => {
+                  return (
+                    <label
+                      key={e.id}
+                      className="p-2 text-sm"
+                      htmlFor={`equipment_${e.id}`}
+                    >
+                      <input
+                        className="m-2"
+                        type="checkbox"
+                        name="equipment[]"
+                        value={e.id}
+                        readOnly={true}
+                        checked={equipment_checked.has(e.id)}
+                        id={`muscles_${e.id}`}
+                      />
+                      {e.name}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
             <div />
-            <button className="col-span-3 rounded-xl bg-red-500 p-2 text-white shadow-xl">
+            <button
+              className="col-span-3 rounded-xl bg-red-500 p-2 text-white shadow-xl"
+              onClick={clickSubmit}
+            >
               Submit
             </button>
           </div>
