@@ -3,11 +3,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   Category,
   Equipment,
-  Exercise,
   Language,
   Licence,
   Muscles,
 } from "@prisma/client";
+import { MyExercise } from "../types/ExerciseTypes";
 
 // Define a service using a base URL and expected endpoints
 
@@ -21,12 +21,12 @@ export const exerciseApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api/" }),
   endpoints: (builder) => ({
     getExerciseById: builder.query<
-      Exercise,
+      MyExercise,
       string | string[] | undefined | number
     >({
       query: (id) => `exercises/${id}`,
     }),
-    getExercises: builder.query<Array<Exercise>, getExercisesArgs>({
+    getExercises: builder.query<Array<MyExercise>, getExercisesArgs>({
       //   query: (args) => { return `exercises/`},
       query: ({ category, search }) => {
         return `exercises?category=${category}${
