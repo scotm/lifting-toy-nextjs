@@ -17,9 +17,12 @@ function clickSubmit(event: React.MouseEvent<HTMLElement>): void {
   // axios.put(event.)
 }
 
-// For pulling out the
-// Not sure how to define an any-like type which *definitely* has an id property
-function build_set(data_array: any[] | undefined): Set<number> {
+// For pulling out the ids for building the checked set
+// Define an any-like type which *definitely* has an id property
+// https://www.executeprogram.com/courses/advanced-typescript/lessons/generic-constraints
+function build_set<T extends { id: number }>(
+  data_array: T[] | undefined
+): Set<number> {
   return data_array !== undefined
     ? new Set(data_array.map((e: any) => e.id))
     : new Set([]);
