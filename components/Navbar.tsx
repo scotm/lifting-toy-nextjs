@@ -1,4 +1,3 @@
-import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -26,14 +25,14 @@ export default function Navbar(props: INavbarProps) {
                 Lifting
               </span>
               <Link href="/" passHref>
-                <span className="py-4 px-2 font-semibold text-green-500 underline">
+                <a className="py-4 px-2 font-semibold text-green-500 underline">
                   Home
-                </span>
+                </a>
               </Link>
               <Link href="/exercises" passHref>
-                <span className="py-4 px-2 font-semibold text-gray-100 transition duration-300 hover:text-green-500">
+                <a className="py-4 px-2 font-semibold text-gray-100 transition duration-300 hover:text-green-500">
                   Exercises
-                </span>
+                </a>
               </Link>
               <a
                 href=""
@@ -43,20 +42,21 @@ export default function Navbar(props: INavbarProps) {
               </a>
             </div>
           </div>
-          {/* <div className="hidden items-center space-x-3 md:flex ">
+          <div className="hidden items-center space-x-3 md:flex ">
+            {/* TODO: Implmement functionality to look up the store/context object and figure
+            out if we're a logged in user. */}
             <a
               href=""
               className="rounded py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white"
             >
               Log In
             </a>
-            <a
-              href=""
-              className="rounded bg-green-500 py-2 px-2 font-medium text-white transition duration-300 hover:bg-green-400"
-            >
-              Sign Up
-            </a>
-          </div> */}
+            <Link href="/signup" passHref={true}>
+              <a className="rounded bg-green-500 py-2 px-2 font-medium text-white transition duration-300 hover:bg-green-400">
+                Sign Up
+              </a>
+            </Link>
+          </div>
           <div className="flex items-center md:hidden">
             <button
               className="mobile-menu-button outline-none"
