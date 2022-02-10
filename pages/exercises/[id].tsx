@@ -26,7 +26,7 @@
 
 import { Exercise, PrismaClient } from "@prisma/client";
 import { useRouter } from "next/router";
-import Layout from "../../components/Layout";
+import Layout from "../../components/PageLayout/Layout";
 
 const prisma = new PrismaClient();
 

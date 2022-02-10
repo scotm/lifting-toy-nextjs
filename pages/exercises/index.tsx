@@ -1,7 +1,7 @@
 import * as React from "react";
 import ExerciseList from "../../components/ExerciseList";
 import ExerciseListHeader from "../../components/ExerciseListHeader";
-import Layout from "../../components/Layout";
+import Layout from "../../components/PageLayout/Layout";
 import { useGetExercisesQuery } from "../../services/exercise";
 
 export interface IShowExercisesProps {}

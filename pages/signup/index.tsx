@@ -1,4 +1,4 @@
-import Layout from "../../components/Layout";
+import Layout from "../../components/PageLayout/Layout";
 import SignUpForm from "../../components/SignUpForm";
 
 export interface SignUpPageProps {}
