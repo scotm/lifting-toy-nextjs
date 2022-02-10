@@ -67,8 +67,6 @@ model Muscles {
   is_front         Boolean            @default(true)
   name             String
   ExerciseBaseData ExerciseBaseData[]
-  // ExerciseBaseData_secondary   ExerciseBaseData? @relation("SecondaryExercise", fields: [exerciseBaseDataId], references: [id])
-  // exerciseBaseDataId_secondary Int?
 }
 
 model ExerciseBaseData {
@@ -83,7 +81,6 @@ model ExerciseBaseData {
   variations     String?
   muscles        Muscles[]
   equipment      Equipment[]
-  // muscles_secondary Muscles[]   @relation("SecondaryExercise")
   Exercise       Exercise[]
 }
 
@@ -172,7 +169,7 @@ model User {
   auth_string     String
   firstname       String
   lastname        String
-  age             Int
+  age             Int?
   posts           Post[]
   profile         Profile?
   WorkoutTemplate WorkoutTemplate[]
