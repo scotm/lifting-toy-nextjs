@@ -1,4 +1,4 @@
-import { ErrorMessage, Field } from "formik";
+import { ErrorMessage, Field, FieldArray } from "formik";
 
 interface MyTextFieldProps {
   name: string;
@@ -67,6 +67,36 @@ export function MySelectField(props: MySelectFieldProps) {
         ))}
       </Field>
       <ErrorMessage name={name} />
+    </>
+  );
+}
+
+interface MyCheckboxesFieldsProps {
+  name: string;
+  label: string;
+  choices: any[];
+}
+
+export function MyCheckboxesFields(props: MyCheckboxesFieldsProps) {
+  const { name, label, choices } = props;
+  return (
+    <>
+      <div className="text-lg font-bold">{label}</div>
+      <div className="col-span-3 grid grid-cols-4 rounded-xl border-2 border-red-200 bg-red-100 p-2 shadow-xl">
+        {choices.map((choice) => (
+          <label key={choice.id} className="flex grid-cols-2">
+            <Field
+              className="m-2"
+              type="checkbox"
+              name={name}
+              // Having to use toString? This *feels* like a wtf!
+              // https://stackoverflow.com/a/64740181
+              value={choice.id.toString()}
+            />
+            <span className=" m-2 text-sm">{choice.name}</span>
+          </label>
+        ))}
+      </div>
     </>
   );
 }

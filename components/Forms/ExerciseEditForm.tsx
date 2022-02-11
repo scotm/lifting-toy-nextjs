@@ -8,9 +8,14 @@ import {
   useGetLicencesQuery,
   useGetMusclesQuery,
 } from "../../services/exercise";
-import { MySelectField, MyTextAreaField, MyTextField } from "../FormComponents";
+import {
+  MyCheckboxesFields,
+  MySelectField,
+  MyTextAreaField,
+  MyTextField,
+} from "../FormComponents";
 
-// We don't need to fill out all these fields.
+// We don't need to fill out *all* these fields.
 // The API will (eventually) auto-generate the ones missing.
 interface FormExercise
   extends Omit<
@@ -23,10 +28,12 @@ interface FormExercise
     | "exerciseBaseDataId"
   > {
   categoryId: number;
-  muscles: number[];
-  equipment: number[];
+  muscles: Array<number | string>;
+  equipment: Array<number | string>;
 }
 
+// This type is *wrong* - it should have all the keys of FormExercise
+// - but each of them typed as "string | undefined"
 type FormErrors = Partial<FormExercise>;
 
 // A form validation function. This must return an object
@@ -88,10 +95,10 @@ export default function SignUpForm(props: EditExerciseFormProps) {
           2,
         license_author: exercise?.license_author ?? "",
         muscles: exercise.exercise_base?.muscles
-          ? exercise.exercise_base?.muscles.map((e) => e.id)
+          ? exercise.exercise_base?.muscles.map((e) => e.id.toString())
           : [],
         equipment: exercise.exercise_base?.equipment
-          ? exercise.exercise_base?.equipment.map((e) => e.id)
+          ? exercise.exercise_base?.equipment.map((e) => e.id.toString())
           : [],
       }}
       onSubmit={(values) => {
@@ -107,31 +114,21 @@ export default function SignUpForm(props: EditExerciseFormProps) {
           options={categories}
         />
         <MyTextAreaField name="description" label="Description" />
+        <MyTextField name="license_author" label="Author" />
         <MySelectField name="licenceId" label="Licence" options={licences} />
 
-        {/* For some reason - this doesn't let you check anything -
-            There must be something wrong with the onChange handler. */}
-        <div className="text-lg font-bold">Equipment</div>
-        <div className="col-span-3 grid grid-cols-4">
-          {equipment.map((e) => {
-            return (
-              <div key={e.id}>
-                <label htmlFor="equipment">
-                  <Field
-                    className="m-2 p-2"
-                    type="checkbox"
-                    name="equipment"
-                    value={e.id}
-                  />
-                  {e.name}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-        <div className="col-span-1"></div>
+        <MyCheckboxesFields
+          name="equipment"
+          label="Equipment"
+          choices={equipment}
+        />
+        <MyCheckboxesFields
+          name="muscles"
+          label="Muscles Used"
+          choices={muscles}
+        />
         <button
-          className="col-span-3 rounded-xl bg-red-500 p-2 text-white shadow-xl transition duration-300 hover:bg-red-400"
+          className="col-span-3 col-start-2 rounded-xl bg-red-500 p-2 text-white shadow-xl transition duration-300 hover:bg-red-400"
           type="submit"
         >
           Submit
