@@ -1,5 +1,5 @@
 import Layout from "../../components/PageLayout/Layout";
-import SignUpForm from "../../components/SignUpForm";
+import SignUpForm from "../../components/Forms/SignUpForm";
 
 export interface SignUpPageProps {}
 
