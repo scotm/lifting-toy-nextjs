@@ -3,6 +3,7 @@ import Link from "next/link";
 import * as React from "react";
 import ExerciseAdditional from "./ExerciseAdditional";
 import type { MyExercise } from "../types/ExerciseTypes";
+import ReactMarkdown from "react-markdown";
 
 export interface IExerciseListProps {
   exercises: MyExercise[];
@@ -26,7 +27,9 @@ export default function ExerciseList(props: IExerciseListProps) {
               </h3>
 
               <div>
-                <div dangerouslySetInnerHTML={{ __html: e.description }}></div>
+                <div>
+                  <ReactMarkdown>{e.description}</ReactMarkdown>
+                </div>
                 <hr />
                 <div className="grid grid-cols-3 gap-4">
                   <ExerciseAdditional

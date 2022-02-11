@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Prisma } from "@prisma/client";
+import { NodeHtmlMarkdown } from "node-html-markdown";
 import * as fs from "fs";
 
 const prisma = new PrismaClient();
@@ -99,6 +100,7 @@ async function main() {
       return exercisebaseids.includes(e.exercise_base);
     });
 
+    const nhm = new NodeHtmlMarkdown();
     data = data.map((element: any): Prisma.ExerciseCreateManyInput => {
       return {
         id: element.id,
@@ -106,7 +108,7 @@ async function main() {
         name: element.name,
         name_original: element.name_original,
         status: element.status,
-        description: element.description,
+        description: nhm.translate(element.description),
         creation_date: new Date(element.creation_date),
         uuid: element.uuid,
         licenceId: element.license,
