@@ -1,4 +1,9 @@
-export default function parseID(n: string[] | string | undefined): number {
+export default function parseID(
+  n: number | string[] | string | undefined
+): number {
+  if (typeof n === "number") {
+    return n;
+  }
   if (n === undefined) {
     return -1;
   }
