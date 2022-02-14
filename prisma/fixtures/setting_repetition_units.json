@@ -1,8 +1,8 @@
 [
-  { "id": 1, "name": "Repetitions" },
-  { "id": 2, "name": "Until Failure" },
+  { "id": 1, "name": "Reps" },
+  { "id": 2, "name": "To Failure" },
   { "id": 3, "name": "Seconds" },
   { "id": 4, "name": "Minutes" },
   { "id": 5, "name": "Miles" },
-  { "id": 6, "name": "Kilometers" }
+  { "id": 6, "name": "km" }
 ]

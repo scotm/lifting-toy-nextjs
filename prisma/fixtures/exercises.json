@@ -2093,19 +2093,6 @@
     "exercise_base": 50
   },
   {
-    "id": 345,
-    "license": 2,
-    "license_author": "deusinvictus",
-    "status": "2",
-    "description": "<p>Two Handed Russian Style Kettlebell swing</p>",
-    "name": "2 Handed Kettlebell Swing",
-    "name_original": "2 Handed Kettlebell swing",
-    "creation_date": "2015-08-03",
-    "language": 2,
-    "uuid": "c788d643-150a-4ac7-97ef-84643c6419bf",
-    "exercise_base": 9
-  },
-  {
     "id": 347,
     "license": 2,
     "license_author": "2dPREtEZP221u68Akf0JImv5L48",
