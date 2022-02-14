@@ -1,11 +1,20 @@
-import { Equipment, Exercise, ExerciseBaseData, Muscles } from "@prisma/client";
-
-export interface MyExerciseBaseData extends ExerciseBaseData {
-  muscles?: Muscles[];
-  equipment?: Equipment[];
-}
+import {
+  Equipment,
+  Exercise,
+  Muscles,
+  WorkoutPiece,
+  WorkoutTemplate,
+} from "@prisma/client";
 
 export interface MyExercise extends Exercise {
   id: number;
-  exercise_base?: MyExerciseBaseData;
+  muscles: Muscles[];
+  equipment: Equipment[];
+}
+
+export interface MyWorkoutPiece
+  extends Omit<WorkoutPiece, "id" | "workoutTemplateId" | "workoutId"> {}
+
+export interface MyWorkoutTemplate extends Omit<WorkoutTemplate, "id"> {
+  pieces: Array<WorkoutPiece>;
 }

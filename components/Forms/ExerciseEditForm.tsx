@@ -85,8 +85,9 @@ export default function SignUpForm(props: EditExerciseFormProps) {
       enableReinitialize={true}
       initialValues={{
         // Fill out sane defaults - we may reuse this for creating exercises
+        id: exercise?.id ?? 0,
         name: exercise?.name ?? "",
-        categoryId: exercise?.exercise_base?.categoryId ?? 1,
+        categoryId: exercise?.categoryId ?? 1,
         description: exercise?.description ?? "",
         licenceId: exercise?.licenceId ?? 2,
         languageId:
@@ -94,11 +95,11 @@ export default function SignUpForm(props: EditExerciseFormProps) {
           languages?.find((e) => e.full_name == "English")?.id ??
           2,
         license_author: exercise?.license_author ?? "",
-        muscles: exercise.exercise_base?.muscles
-          ? exercise.exercise_base?.muscles.map((e) => e.id.toString())
+        muscles: exercise?.muscles
+          ? exercise.muscles.map((e) => e.id.toString())
           : [],
-        equipment: exercise.exercise_base?.equipment
-          ? exercise.exercise_base?.equipment.map((e) => e.id.toString())
+        equipment: exercise?.equipment
+          ? exercise.equipment.map((e) => e.id.toString())
           : [],
       }}
       onSubmit={(values) => {

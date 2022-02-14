@@ -34,17 +34,17 @@ export default function ExerciseList(props: IExerciseListProps) {
                 <div className="grid grid-cols-3 gap-4">
                   <ExerciseAdditional
                     precursor="Muscles Used: "
-                    named={e?.exercise_base?.muscles}
+                    named={e.muscles}
                   ></ExerciseAdditional>
                   <ExerciseAdditional
                     precursor="Equipment: "
-                    named={e?.exercise_base?.equipment}
+                    named={e.equipment}
                   ></ExerciseAdditional>
                   <ExerciseAdditional
                     precursor="Author: "
                     named={
-                      e?.exercise_base?.license_author !== undefined
-                        ? [{ name: e?.exercise_base?.license_author }]
+                      e.license_author !== undefined
+                        ? [{ name: e.license_author }]
                         : undefined
                     }
                   ></ExerciseAdditional>

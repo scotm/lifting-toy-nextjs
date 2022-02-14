@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Category {
-  id               Int                @id @default(autoincrement())
-  name             String
-  ExerciseBaseData ExerciseBaseData[]
+  id       Int        @id @default(autoincrement())
+  name     String
+  Exercise Exercise[]
 }
 
 model DayOfWeek {
@@ -22,9 +22,9 @@ model DayOfWeek {
 }
 
 model Equipment {
-  id               Int                @id @default(autoincrement())
-  name             String
-  ExerciseBaseData ExerciseBaseData[]
+  id       Int        @id @default(autoincrement())
+  name     String
+  Exercise Exercise[]
 }
 
 model Language {
@@ -35,12 +35,11 @@ model Language {
 }
 
 model Licence {
-  id               Int                @id @default(autoincrement())
-  full_name        String
-  short_name       String
-  url              String
-  Exercise         Exercise[]
-  ExerciseBaseData ExerciseBaseData[]
+  id         Int        @id @default(autoincrement())
+  full_name  String
+  short_name String
+  url        String
+  Exercise   Exercise[]
 }
 
 model Exercise {
@@ -56,32 +55,20 @@ model Exercise {
   language              Language                @relation(fields: [languageId], references: [id])
   languageId            Int
   uuid                  String                  @db.Uuid
-  exercise_base         ExerciseBaseData        @relation(fields: [exerciseBaseDataId], references: [id])
-  exerciseBaseDataId    Int
+  category              Category                @relation(fields: [categoryId], references: [id])
+  categoryId            Int
+  variations            String?
+  muscles               Muscles[]
+  equipment             Equipment[]
   WorkoutPiece          WorkoutPiece[]
   CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
 model Muscles {
-  id               Int                @id @default(autoincrement())
-  is_front         Boolean            @default(true)
-  name             String
-  ExerciseBaseData ExerciseBaseData[]
-}
-
-model ExerciseBaseData {
-  id             Int         @id @default(autoincrement())
-  license        Licence     @relation(fields: [licenceId], references: [id])
-  licenceId      Int
-  license_author String
-  status         String
-  uuid           String
-  category       Category    @relation(fields: [categoryId], references: [id])
-  categoryId     Int
-  variations     String?
-  muscles        Muscles[]
-  equipment      Equipment[]
-  Exercise       Exercise[]
+  id       Int        @id @default(autoincrement())
+  is_front Boolean    @default(true)
+  name     String
+  Exercise Exercise[]
 }
 
 model RepetitionUnits {
@@ -94,7 +81,6 @@ model RepetitionUnits {
 model WeightUnits {
   id                    Int                     @id @default(autoincrement())
   name                  String
-  WorkoutPiece          WorkoutPiece[]
   CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
@@ -132,11 +118,10 @@ model CompletedWorkoutPiece {
 model WorkoutPiece {
   id                Int              @id @default(autoincrement())
   exercise          Exercise         @relation(fields: [exerciseId], references: [id])
+  number_of_reps    Int?
   reps              RepetitionUnits  @relation(fields: [repetitionUnitsId], references: [id])
-  weight            WeightUnits      @relation(fields: [weightUnitsId], references: [id])
   exerciseId        Int
   repetitionUnitsId Int
-  weightUnitsId     Int
   WorkoutTemplate   WorkoutTemplate? @relation(fields: [workoutTemplateId], references: [id])
   workoutTemplateId Int?
   Workout           Workout?         @relation(fields: [workoutId], references: [id])
@@ -166,10 +151,13 @@ model WorkoutTemplate {
 model User {
   id              Int               @id @default(autoincrement())
   email           String            @unique
+  passwordhash    String
+  salt            String
   auth_string     String
   firstname       String
   lastname        String
   age             Int?
+  joining_date    DateTime
   posts           Post[]
   profile         Profile?
   WorkoutTemplate WorkoutTemplate[]

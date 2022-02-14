@@ -40,86 +40,78 @@ async function main() {
     writeToDB(json_data, prisma_client);
   }
 
-  let exercisebaseids: number[];
+  const exerciseBaseData = new Map();
   {
     let json_data = getJSONFromFile("exercise-base-data.json");
-    exercisebaseids = json_data.map((e: any) => e.id);
-    let data = json_data.map(
-      (element: any): Prisma.ExerciseBaseDataCreateManyInput => {
-        return {
-          id: element.id,
-          license_author: element.license_author,
-          status: element.status,
-          uuid: element.uuid,
-          licenceId: element.license,
-          categoryId: element.category,
-        };
-      }
-    );
-    await prisma.exerciseBaseData
-      .createMany({ data: data })
-      .catch((onrejected) => {
-        console.log("Exception thrown on making many ExerciseBaseData objects");
-        console.log(onrejected);
-      });
-
-    json_data.forEach(async (e: any) => {
-      let m = [
-        ...e.muscles.map((x: any) => {
+    json_data.forEach((e: any) => {
+      exerciseBaseData.set(e.id, {
+        id: e.id,
+        license_author: e.license_author,
+        status: e.status,
+        uuid: e.uuid,
+        licenceId: e.license,
+        categoryId: e.category,
+        muscles: [
+          ...e.muscles.map((x: any) => {
+            return { id: x };
+          }),
+          ...e.muscles_secondary.map((x: any) => {
+            return { id: x };
+          }),
+        ],
+        equipment: e.equipment.map((x: any) => {
           return { id: x };
         }),
-        ...e.muscles_secondary.map((x: any) => {
-          return { id: x };
-        }),
-      ];
-      let equip = e.equipment.map((x: any) => {
-        return { id: x };
       });
-      const updateobj: Prisma.ExerciseBaseDataUpdateArgs = {
-        where: {
-          id: e.id,
-        },
-        data: {
-          muscles: {
-            connect: m,
-          },
-          equipment: {
-            connect: equip,
-          },
-        },
-      };
-      try {
-        await prisma.exerciseBaseData.update(updateobj);
-      } catch {}
     });
   }
 
   {
     let json_data = getJSONFromFile("exercises.json");
-    let data = json_data.filter((e: any) => {
-      return exercisebaseids.includes(e.exercise_base);
-    });
-
     const nhm = new NodeHtmlMarkdown();
-    data = data.map((element: any): Prisma.ExerciseCreateManyInput => {
-      return {
-        id: element.id,
-        license_author: element.license_author,
-        name: element.name,
-        name_original: element.name_original,
-        status: element.status,
-        description: nhm.translate(element.description),
-        creation_date: new Date(element.creation_date),
-        uuid: element.uuid,
-        licenceId: element.license,
-        languageId: element.language,
-        exerciseBaseDataId: element.exercise_base,
-      };
-    });
-    prisma.exercise.createMany({ data: data }).catch((onrejected) => {
+    const data = json_data.map(
+      (element: any): Prisma.ExerciseCreateManyInput => {
+        return {
+          id: element.id,
+          license_author: element.license_author,
+          name: element.name,
+          name_original: element.name_original,
+          status: element.status,
+          description: nhm.translate(element.description),
+          creation_date: new Date(element.creation_date),
+          uuid: element.uuid,
+          licenceId: element.license,
+          languageId: element.language,
+          categoryId: exerciseBaseData.get(element.exercise_base).categoryId,
+        };
+      }
+    );
+
+    await prisma.exercise.createMany({ data: data }).catch((onrejected) => {
       console.log("Exception thrown on making many Exercise objects");
       console.log(onrejected);
     });
+
+    await Promise.all(
+      json_data.map(async (e: any) => {
+        const updateobj: Prisma.ExerciseUpdateArgs = {
+          where: {
+            id: e.id,
+          },
+          data: {
+            muscles: {
+              connect: exerciseBaseData.get(e.exercise_base).muscles,
+            },
+            equipment: {
+              connect: exerciseBaseData.get(e.exercise_base).equipment,
+            },
+          },
+        };
+        return prisma.exercise.update(updateobj).catch((e) => {
+          throw e;
+        });
+      })
+    );
   }
 
   // Get all the table names and reset their autocounters
