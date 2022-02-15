@@ -1,5 +1,5 @@
-import { Category } from "@prisma/client";
-import { useGetCategoriesQuery } from "../services/exercise";
+import { useQuery } from "react-query";
+import { fetchCategories } from "../api-services";
 
 export interface ExerciseCategorySelectProps {
   category: string;
@@ -9,20 +9,19 @@ export interface ExerciseCategorySelectProps {
 export default function ExerciseCategorySelect(
   props: ExerciseCategorySelectProps
 ) {
-  // API call effect
-  const { data } = useGetCategoriesQuery();
-  const { setCategory } = props;
+  const { isLoading, error, data } = useQuery("categories", fetchCategories);
+  const { category, setCategory } = props;
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (error) return <div>An error has occurred</div>;
 
   if (data !== undefined) {
-    const initialCategory: Category = data.find((e) => e.name == "All") ?? {
-      id: 1,
-      name: "All",
-    };
     return (
       <select
         className="m-2 w-full border-2 border-slate-800 p-0.5"
         onChange={(event) => setCategory(event.target.value)}
-        defaultValue={initialCategory.id}
+        defaultValue={category}
       >
         {data.map((category) => (
           <option key={category.id}>{category.name}</option>

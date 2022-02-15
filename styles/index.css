@@ -6,3 +6,11 @@ ol {
   list-style-type: decimal;
   margin-top: 0.5em;
 }
+
+.exercise-description p {
+  @apply my-2;
+}
+
+.exercise-description p img {
+  @apply text-center;
+}

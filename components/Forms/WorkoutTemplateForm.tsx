@@ -1,19 +1,15 @@
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  FolderAddIcon,
-  FolderRemoveIcon,
-} from "@heroicons/react/solid";
+import { FolderAddIcon, FolderRemoveIcon } from "@heroicons/react/solid";
 import { FieldArray, Form, Formik } from "formik";
 import {
-  useGetAllExercisesQuery,
-  useGetRepetitionUnitsQuery,
-  useGetWeightUnitsQuery,
-} from "../../services/exercise";
+  fetchAllExercises,
+  fetchRepetitionUnits,
+  fetchWeightUnits,
+} from "../../api-services";
 import { MyWorkoutPiece, MyWorkoutTemplate } from "../../types/ExerciseTypes";
 import ExerciseList from "../ExerciseList";
 import { MySelectField, MyTextField } from "../FormComponents";
 import Modal from "../Modal";
+import { useQuery } from "react-query";
 
 type FormError = Partial<{ [day in keyof MyWorkoutTemplate]: string }>;
 
@@ -34,9 +30,12 @@ function validate(values: MyWorkoutTemplate): FormError {
 interface WorkoutTemplateFormProps {}
 
 export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
-  const { data: exercises } = useGetAllExercisesQuery();
-  const { data: repetitionunits } = useGetRepetitionUnitsQuery();
-  const { data: weightunits } = useGetWeightUnitsQuery();
+  const { data: exercises } = useQuery("exercises", fetchAllExercises);
+  const { data: repetitionunits } = useQuery(
+    "repetitionunits",
+    fetchRepetitionUnits
+  );
+  const { data: weightunits } = useQuery("weightunits", fetchWeightUnits);
 
   if (
     exercises === undefined ||

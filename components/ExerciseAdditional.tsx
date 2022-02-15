@@ -1,5 +1,3 @@
-import * as React from "react";
-
 interface NamedObject {
   id?: number;
   name: string;

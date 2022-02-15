@@ -1,19 +1,31 @@
 import { PencilAltIcon } from "@heroicons/react/outline";
 import Link from "next/link";
-import * as React from "react";
-import ExerciseAdditional from "./ExerciseAdditional";
-import type { MyExercise } from "../types/ExerciseTypes";
 import ReactMarkdown from "react-markdown";
+import { useQuery } from "react-query";
+import { fetchExercises } from "../api-services";
+import type { MyExercise } from "../types/ExerciseTypes";
+import ExerciseAdditional from "./ExerciseAdditional";
 
 export interface IExerciseListProps {
-  exercises: MyExercise[];
   edit?: boolean;
   show_description?: boolean;
   exercise_onclick?: Function;
+  category: string;
+  search: string;
 }
 
 export default function ExerciseList(props: IExerciseListProps) {
-  let { exercises, edit, show_description } = props;
+  let { edit, show_description, category, search } = props;
+  const {
+    data: exercises,
+    error,
+    isLoading,
+  } = useQuery(["exercises_list", category, search], () =>
+    fetchExercises(category, search)
+  );
+  if (isLoading) return <div>Loading...</div>;
+  if (exercises === undefined) return <div></div>;
+
   edit = edit === undefined ? true : edit;
   show_description = show_description === undefined ? true : edit;
   return (
@@ -37,7 +49,7 @@ export default function ExerciseList(props: IExerciseListProps) {
 
               <div>
                 {show_description ? (
-                  <div>
+                  <div className="exercise-description">
                     <ReactMarkdown>{e.description}</ReactMarkdown>
                   </div>
                 ) : (

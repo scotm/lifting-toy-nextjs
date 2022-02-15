@@ -1,4 +1,4 @@
-import { ErrorMessage, Field, FieldArray } from "formik";
+import { ErrorMessage, Field } from "formik";
 
 interface MyTextFieldProps {
   className?: string;

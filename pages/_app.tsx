@@ -1,14 +1,16 @@
 import "../styles/index.css";
-import { Provider } from "react-redux";
-
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import type { AppProps } from "next/app";
-import { store } from "../store";
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />;
-    </Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

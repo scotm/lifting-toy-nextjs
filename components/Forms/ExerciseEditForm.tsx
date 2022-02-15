@@ -3,19 +3,21 @@ import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { Dispatch, SetStateAction } from "react";
 import {
-  useGetCategoriesQuery,
-  useGetEquipmentQuery,
-  useGetExerciseByIdQuery,
-  useGetLanguagesQuery,
-  useGetLicencesQuery,
-  useGetMusclesQuery,
-} from "../../services/exercise";
-import {
   MyCheckboxesFields,
   MySelectField,
   MyTextAreaField,
   MyTextField,
 } from "../FormComponents";
+import { useQuery } from "react-query";
+import {
+  fetchCategories,
+  fetchEquipment,
+  fetchLanguages,
+  fetchLicences,
+  fetchMuscles,
+  fetchExerciseByID,
+} from "../../api-services";
+import { useRouter } from "next/router";
 
 // We don't need to fill out *all* these fields.
 // The API will (eventually) auto-generate the ones missing.
@@ -43,12 +45,15 @@ interface EditExerciseFormProps {
 
 export function ExerciseEditForm(props: EditExerciseFormProps) {
   // Pull in the data from API calls
-  const { data: exercise } = useGetExerciseByIdQuery(props.id);
-  const { data: languages } = useGetLanguagesQuery();
-  const { data: licences } = useGetLicencesQuery();
-  const { data: categories } = useGetCategoriesQuery();
-  const { data: muscles } = useGetMusclesQuery();
-  const { data: equipment } = useGetEquipmentQuery();
+  const { data: exercise } = useQuery(["exercise", props.id], () =>
+    fetchExerciseByID(props.id)
+  );
+  const { data: languages } = useQuery("languages", fetchLanguages);
+  const { data: licences } = useQuery("licences", fetchLicences);
+  const { data: categories } = useQuery("categories", fetchCategories);
+  const { data: muscles } = useQuery("muscles", fetchMuscles);
+  const { data: equipment } = useQuery("equipment", fetchEquipment);
+  const router = useRouter();
 
   // We don't render anything until these have all returned.
   if (
@@ -118,6 +123,7 @@ export function ExerciseEditForm(props: EditExerciseFormProps) {
       onSubmit={async (values) => {
         // Stub - will replace this with a call to the API.
         await axios.put(`/api/exercises/${values.id}`, values);
+        router.push("/exercises");
       }}
     >
       {(formik) => {
