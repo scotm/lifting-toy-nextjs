@@ -8,5 +8,6 @@
   { "id": 7, "name": "None" },
   { "id": 8, "name": "Bench" },
   { "id": 9, "name": "Incline bench" },
-  { "id": 10, "name": "Kettlebell" }
+  { "id": 10, "name": "Kettlebell" },
+  { "id": 11, "name": "Skipping rope" }
 ]
