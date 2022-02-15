@@ -1,43 +1,44 @@
 import { ErrorMessage, Field, FieldArray } from "formik";
 
 interface MyTextFieldProps {
+  className?: string;
   name: string;
   label: string;
 }
 
 export function MyTextField(props: MyTextFieldProps) {
-  const { name, label } = props;
+  const { name, label, className } = props;
   return (
     <>
-      <label className="text-lg font-bold" htmlFor={name}>
-        {label}
-      </label>
+      {label ? (
+        <label className="text-lg font-bold" htmlFor={name}>
+          {label}
+        </label>
+      ) : null}
       <Field
-        className="col-span-3 rounded-xl shadow-xl"
+        className={className ?? "col-span-3 rounded-xl shadow-xl"}
         name={name}
         as="input"
         type="text"
       />
-      <div className="col-span-4 bg-red-200">
-        <ErrorMessage name={name} />
-      </div>
+      <ErrorMessage name={name} className="col-span-4 bg-red-200" />
     </>
   );
 }
 
 export function MyTextAreaField(props: MyTextFieldProps) {
-  const { name, label } = props;
+  const { name, label, className } = props;
   return (
     <>
       <label className="text-lg font-bold" htmlFor={name}>
         {label}
       </label>
       <Field
-        className="col-span-3 rounded-xl shadow-xl"
+        className={className ?? "col-span-3 h-96 rounded-xl shadow-xl"}
         name={name}
         as="textarea"
       ></Field>
-      <ErrorMessage name={name} />
+      <ErrorMessage name={name} className="col-span-4 bg-red-200" />
     </>
   );
 }
@@ -52,9 +53,11 @@ export function MySelectField(props: MySelectFieldProps) {
   const { name, label, options } = props;
   return (
     <>
-      <label className="text-lg font-bold" htmlFor={name}>
-        {label}
-      </label>
+      {label ? (
+        <label className="text-lg font-bold" htmlFor={name}>
+          {label}
+        </label>
+      ) : null}
       <Field
         className="col-span-3 rounded-xl shadow-xl"
         name={name}

@@ -6,6 +6,8 @@ import {
   Language,
   Licence,
   Muscles,
+  RepetitionUnits,
+  WeightUnits,
 } from "@prisma/client";
 import { MyExercise } from "../types/ExerciseTypes";
 
@@ -34,6 +36,11 @@ export const exerciseApi = createApi({
         }`;
       },
     }),
+    getAllExercises: builder.query<Array<MyExercise>, void>({
+      query: () => {
+        return `exercises`;
+      },
+    }),
     getCategories: builder.query<Array<Category>, void>({
       query: () => `categories`,
     }),
@@ -49,6 +56,12 @@ export const exerciseApi = createApi({
     getEquipment: builder.query<Array<Equipment>, void>({
       query: () => `equipment`,
     }),
+    getRepetitionUnits: builder.query<Array<RepetitionUnits>, void>({
+      query: () => `repetitionunits`,
+    }),
+    getWeightUnits: builder.query<Array<WeightUnits>, void>({
+      query: () => `weightunits`,
+    }),
   }),
 });
 
@@ -62,4 +75,7 @@ export const {
   useGetMusclesQuery,
   useGetLanguagesQuery,
   useGetEquipmentQuery,
+  useGetAllExercisesQuery,
+  useGetRepetitionUnitsQuery,
+  useGetWeightUnitsQuery,
 } = exerciseApi;

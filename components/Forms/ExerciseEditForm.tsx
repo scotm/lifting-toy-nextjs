@@ -1,5 +1,7 @@
 import type { Exercise } from "@prisma/client";
+import axios from "axios";
 import { Field, Form, Formik } from "formik";
+import { Dispatch, SetStateAction } from "react";
 import {
   useGetCategoriesQuery,
   useGetEquipmentQuery,
@@ -32,32 +34,14 @@ interface FormExercise
   equipment: Array<number | string>;
 }
 
-// This type is *wrong* - it should have all the keys of FormExercise
-// - but each of them typed as "string | undefined"
-type FormErrors = Partial<FormExercise>;
-
-// A form validation function. This must return an object
-// which keys are symmetrical to our values/initialValues
-function validate(values: FormExercise): FormErrors {
-  const errors: FormErrors = {};
-
-  // TODO: Add lots more!
-  if (!values.name) {
-    errors.name = "Required";
-  } else if (values.name.length > 255) {
-    errors.name = "Please use fewer than 255 characters";
-  }
-  if (!values.description) {
-    errors.description = "Required";
-  }
-  return errors;
-}
+type FormErrors = Partial<{ [n in keyof FormExercise]: string }>;
 
 interface EditExerciseFormProps {
-  id: number;
+  id?: number;
+  setTitle?: Dispatch<SetStateAction<string>>;
 }
 
-export default function SignUpForm(props: EditExerciseFormProps) {
+export function ExerciseEditForm(props: EditExerciseFormProps) {
   // Pull in the data from API calls
   const { data: exercise } = useGetExerciseByIdQuery(props.id);
   const { data: languages } = useGetLanguagesQuery();
@@ -68,7 +52,6 @@ export default function SignUpForm(props: EditExerciseFormProps) {
 
   // We don't render anything until these have all returned.
   if (
-    exercise === undefined ||
     languages === undefined ||
     licences === undefined ||
     categories === undefined ||
@@ -77,6 +60,35 @@ export default function SignUpForm(props: EditExerciseFormProps) {
   ) {
     return null;
   }
+
+  // A form validation function. This must return an object
+  // which keys are symmetrical to our values/initialValues
+  function validate(values: FormExercise): FormErrors {
+    const errors: FormErrors = {};
+
+    // TODO: Add lots more!
+    if (!values.name) {
+      errors.name = "Required";
+    } else if (values.name.length > 255) {
+      errors.name = "Please use fewer than 255 characters";
+    }
+    if (!values.description) {
+      errors.description = "Required";
+    }
+    if (values.categoryId === 1) {
+      errors.categoryId = "We need a specific category for this exercise";
+    }
+    if (values.equipment.length === 0) {
+      errors.equipment = "Fill out the necessary equipment";
+    }
+    if (values.muscles.length === 0) {
+      errors.muscles = "Fill out muscles used";
+    }
+    return errors;
+  }
+
+  if (props.setTitle)
+    props.setTitle(exercise ? `Editing ${exercise.name}` : "");
 
   // Otherwise - render the form.
   return (
@@ -101,40 +113,51 @@ export default function SignUpForm(props: EditExerciseFormProps) {
         equipment: exercise?.equipment
           ? exercise.equipment.map((e) => e.id.toString())
           : [],
+        variations: "",
       }}
-      onSubmit={(values) => {
+      onSubmit={async (values) => {
         // Stub - will replace this with a call to the API.
-        alert(JSON.stringify(values, null, 2));
+        await axios.put(`/api/exercises/${values.id}`, values);
       }}
     >
-      <Form className="grid grid-cols-4 gap-4 py-4 lg:mx-8">
-        <MyTextField name="name" label="Exercise Name" />
-        <MySelectField
-          name="categoryId"
-          label="Category"
-          options={categories}
-        />
-        <MyTextAreaField name="description" label="Description" />
-        <MyTextField name="license_author" label="Author" />
-        <MySelectField name="licenceId" label="Licence" options={licences} />
+      {(formik) => {
+        return (
+          <Form className="grid grid-cols-4 gap-4 py-4 lg:mx-8">
+            <Field type="hidden" name="id" />
+            <MyTextField name="name" label="Exercise Name" />
+            <MySelectField
+              name="categoryId"
+              label="Category"
+              options={categories}
+            />
+            <MyTextAreaField name="description" label="Description" />
+            <MyTextField name="license_author" label="Author" />
+            <MySelectField
+              name="licenceId"
+              label="Licence"
+              options={licences}
+            />
 
-        <MyCheckboxesFields
-          name="equipment"
-          label="Equipment"
-          choices={equipment}
-        />
-        <MyCheckboxesFields
-          name="muscles"
-          label="Muscles Used"
-          choices={muscles}
-        />
-        <button
-          className="col-span-3 col-start-2 rounded-xl bg-red-500 p-2 text-white shadow-xl transition duration-300 hover:bg-red-400"
-          type="submit"
-        >
-          Submit
-        </button>
-      </Form>
+            <MyCheckboxesFields
+              name="equipment"
+              label="Equipment"
+              choices={equipment}
+            />
+            <MyCheckboxesFields
+              name="muscles"
+              label="Muscles Used"
+              choices={muscles}
+            />
+            <button
+              className="col-span-3 col-start-2 rounded-xl bg-red-500 p-2 text-white shadow-xl transition duration-300 hover:bg-red-400"
+              type="submit"
+              disabled={!formik.isValid || formik.isSubmitting}
+            >
+              Submit
+            </button>
+          </Form>
+        );
+      }}
     </Formik>
   );
 }
