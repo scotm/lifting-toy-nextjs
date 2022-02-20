@@ -1,5 +1,7 @@
 import { useUser } from "@auth0/nextjs-auth0";
+import axios from "axios";
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import {
   fetchAllExercises,
@@ -25,6 +27,14 @@ function validate(values: MyWorkoutTemplate): FormError {
   if (!values.name) {
     errors.name = "Please give this workout a name";
   }
+  if (values.pieces.length === 0) {
+    errors.pieces =
+      "There should be at least one exercise in a workout template";
+  }
+  if (values.pieces.some((piece) => piece.rep_pair.length === 0)) {
+    errors.pieces =
+      "There are exercises in this template, without a specific workload. Add a working set to it.";
+  }
   return errors;
 }
 
@@ -43,6 +53,19 @@ function AddSetButton(props: { ah: ArrayHelpers }) {
   );
 }
 
+function RemoveExerciseButton(props: { ah: ArrayHelpers; index: number }) {
+  const { ah, index } = props;
+  return (
+    <button
+      className="rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400"
+      type="button"
+      onClick={() => ah.remove(index)}
+    >
+      Remove Exercise
+    </button>
+  );
+}
+
 interface WorkoutTemplateFormProps {}
 
 export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
@@ -53,6 +76,7 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
     fetchRepetitionUnits
   );
   const { data: weightunits } = useQuery("weightunits", fetchWeightUnits);
+  const router = useRouter();
 
   if (
     exercises === undefined ||
@@ -72,9 +96,12 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
     <Formik
       initialValues={initialValues}
       enableReinitialize={true}
-      onSubmit={(values, formikhelpers) => {
-        alert(JSON.stringify(values, null, 2));
+      onSubmit={async (values, formikhelpers) => {
+        // alert(JSON.stringify(values, null, 2));
         console.log(values);
+        // Stub - will replace this with a call to the API.
+        const response = await axios.post(`/api/workouttemplate/`, values);
+        // router.push(`/exercises/${values.id}`);
         formikhelpers.setSubmitting(false);
       }}
       validate={validate}
@@ -97,18 +124,12 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
                         name={`pieces.${index}.exerciseId`}
                         label={""}
                         options={exercises}
-                        className="col-span-3 rounded-md border-2 border-red-700 bg-red-500 text-white shadow-md"
+                        className={`col-span-${
+                          values.pieces.length > 1 ? "3" : "4"
+                        } rounded-md border-2 border-red-700 bg-red-500 text-white shadow-md`}
                       />
-                      {values.pieces.length >= 2 ? (
-                        <button
-                          className="rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400"
-                          type="button"
-                          onClick={() => arrayHelpers.remove(index)}
-                        >
-                          Remove Exercise
-                        </button>
-                      ) : (
-                        <div></div>
+                      {values.pieces.length > 1 && (
+                        <RemoveExerciseButton ah={arrayHelpers} index={index} />
                       )}
                       <FieldArray
                         name={`pieces.${index}.rep_pair`}

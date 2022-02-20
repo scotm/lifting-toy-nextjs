@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Footer from "../components/PageLayout/Footer";
 import Navbar from "../components/PageLayout/Navbar";
+import ShowWorkoutTemplates from "../components/ShowWorkoutTemplates";
 
 const Home: NextPage = () => {
   return (
@@ -56,6 +57,7 @@ const Home: NextPage = () => {
         </div>
       </div>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <ShowWorkoutTemplates />
       <Footer />
     </>
   );

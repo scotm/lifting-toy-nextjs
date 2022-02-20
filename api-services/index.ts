@@ -7,6 +7,7 @@ import {
   Muscles,
   RepetitionUnits,
   WeightUnits,
+  WorkoutTemplate,
 } from "@prisma/client";
 import { MyExercise } from "../types/ExerciseTypes";
 
@@ -67,4 +68,8 @@ export async function fetchLanguages() {
 
 export async function fetchLicences() {
   return fetchType<Licence[]>("/api/licences");
+}
+
+export async function fetchWorkoutTemplates() {
+  return fetchType<WorkoutTemplate[]>("/api/workouttemplate");
 }
