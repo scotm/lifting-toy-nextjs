@@ -66,5 +66,5 @@ export async function fetchLanguages() {
 }
 
 export async function fetchLicences() {
-  return fetchType<Licence[]>("/api/equipment");
+  return fetchType<Licence[]>("/api/licences");
 }

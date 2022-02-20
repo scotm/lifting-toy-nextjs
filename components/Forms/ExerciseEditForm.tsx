@@ -92,9 +92,6 @@ export function ExerciseEditForm(props: EditExerciseFormProps) {
     return errors;
   }
 
-  if (props.setTitle)
-    props.setTitle(exercise ? `Editing ${exercise.name}` : "");
-
   // Otherwise - render the form.
   return (
     <Formik
@@ -123,7 +120,7 @@ export function ExerciseEditForm(props: EditExerciseFormProps) {
       onSubmit={async (values) => {
         // Stub - will replace this with a call to the API.
         await axios.put(`/api/exercises/${values.id}`, values);
-        router.push("/exercises");
+        router.push(`/exercises/${values.id}`);
       }}
     >
       {(formik) => {

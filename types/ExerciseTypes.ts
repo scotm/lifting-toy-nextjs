@@ -2,8 +2,9 @@ import {
   Equipment,
   Exercise,
   Muscles,
-  WorkoutPiece,
   WorkoutTemplate,
+  TemplateExercisePieces,
+  RepPair,
 } from "@prisma/client";
 
 export interface MyExercise extends Exercise {
@@ -12,9 +13,17 @@ export interface MyExercise extends Exercise {
   equipment: Equipment[];
 }
 
-export interface MyWorkoutPiece
-  extends Omit<WorkoutPiece, "id" | "workoutTemplateId" | "workoutId"> {}
-
-export interface MyWorkoutTemplate extends Omit<WorkoutTemplate, "id"> {
-  pieces: Array<WorkoutPiece>;
+export interface MyTemplateExercisePieces
+  extends Omit<
+    TemplateExercisePieces,
+    "id" | "workoutTemplateId" | "workoutId"
+  > {
+  rep_pair: Array<MyRepPair>;
 }
+
+export interface MyWorkoutTemplate
+  extends Omit<WorkoutTemplate, "id" | "userId"> {
+  pieces: Array<MyTemplateExercisePieces>;
+}
+
+export interface MyRepPair extends Omit<RepPair, "id" | "templateExerciseId"> {}

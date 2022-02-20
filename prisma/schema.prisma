@@ -43,25 +43,24 @@ model Licence {
 }
 
 model Exercise {
-  id                    Int                     @id @default(autoincrement())
-  licence               Licence                 @relation(fields: [licenceId], references: [id])
-  licenceId             Int
-  license_author        String
-  name                  String
-  name_original         String
-  status                String
-  description           String
-  creation_date         DateTime
-  language              Language                @relation(fields: [languageId], references: [id])
-  languageId            Int
-  uuid                  String                  @db.Uuid
-  category              Category                @relation(fields: [categoryId], references: [id])
-  categoryId            Int
-  variations            String?
-  muscles               Muscles[]
-  equipment             Equipment[]
-  WorkoutPiece          WorkoutPiece[]
-  CompletedWorkoutPiece CompletedWorkoutPiece[]
+  id                     Int                      @id @default(autoincrement())
+  licence                Licence                  @relation(fields: [licenceId], references: [id])
+  licenceId              Int
+  license_author         String
+  name                   String
+  name_original          String
+  status                 String
+  description            String
+  creation_date          DateTime
+  language               Language                 @relation(fields: [languageId], references: [id])
+  languageId             Int
+  uuid                   String                   @db.Uuid
+  category               Category                 @relation(fields: [categoryId], references: [id])
+  categoryId             Int
+  variations             String?
+  muscles                Muscles[]
+  equipment              Equipment[]
+  TemplateExercisePieces TemplateExercisePieces[]
 }
 
 model Muscles {
@@ -72,16 +71,14 @@ model Muscles {
 }
 
 model RepetitionUnits {
-  id                    Int                     @id @default(autoincrement())
-  name                  String
-  WorkoutPiece          WorkoutPiece[]
-  CompletedWorkoutPiece CompletedWorkoutPiece[]
+  id      Int       @id @default(autoincrement())
+  name    String
+  RepPair RepPair[]
 }
 
 model WeightUnits {
-  id                    Int                     @id @default(autoincrement())
-  name                  String
-  CompletedWorkoutPiece CompletedWorkoutPiece[]
+  id   Int    @id @default(autoincrement())
+  name String
 }
 
 model Post {
@@ -102,64 +99,44 @@ model Profile {
   userId Int     @unique
 }
 
-model CompletedWorkoutPiece {
-  id                Int             @id @default(autoincrement())
-  completed_on      DateTime        @default(now())
-  exercise          Exercise        @relation(fields: [exerciseId], references: [id])
-  reps              RepetitionUnits @relation(fields: [repetitionUnitsId], references: [id])
-  weight            WeightUnits     @relation(fields: [weightUnitsId], references: [id])
-  exerciseId        Int
-  repetitionUnitsId Int
-  weightUnitsId     Int
-  Workout           Workout         @relation(fields: [workoutId], references: [id])
-  workoutId         Int
+model RepPair {
+  id                 Int                    @id @default(autoincrement())
+  reptype            RepetitionUnits        @relation(fields: [repetitionUnitsId], references: [id])
+  reps               Int
+  repetitionUnitsId  Int
+  TemplateExercise   TemplateExercisePieces @relation(fields: [templateExerciseId], references: [id])
+  templateExerciseId Int
 }
 
-model WorkoutPiece {
+model TemplateExercisePieces {
   id                Int              @id @default(autoincrement())
   exercise          Exercise         @relation(fields: [exerciseId], references: [id])
-  number_of_reps    Int?
-  reps              RepetitionUnits  @relation(fields: [repetitionUnitsId], references: [id])
   exerciseId        Int
-  repetitionUnitsId Int
+  rep_pair          RepPair[]
   WorkoutTemplate   WorkoutTemplate? @relation(fields: [workoutTemplateId], references: [id])
   workoutTemplateId Int?
-  Workout           Workout?         @relation(fields: [workoutId], references: [id])
-  workoutId         Int?
-}
-
-// model CompletedWorkout{
-
-// }
-
-model Workout {
-  id                    Int                     @id @default(autoincrement())
-  user                  User                    @relation(fields: [userId], references: [id])
-  userId                Int
-  pieces                WorkoutPiece[]
-  CompletedWorkoutPiece CompletedWorkoutPiece[]
 }
 
 model WorkoutTemplate {
-  id     Int            @id @default(autoincrement())
+  id     Int                      @id @default(autoincrement())
   name   String
-  user   User           @relation(fields: [userId], references: [id])
+  user   User                     @relation(fields: [userId], references: [id])
   userId Int
-  pieces WorkoutPiece[]
+  pieces TemplateExercisePieces[]
 }
 
 model User {
   id              Int               @id @default(autoincrement())
+  external_id     String?           @unique
   email           String            @unique
-  passwordhash    String
-  salt            String
-  auth_string     String
   firstname       String
   lastname        String
   age             Int?
+  passwordhash    String?
+  salt            String?
+  auth_string     String?
   joining_date    DateTime
   posts           Post[]
   profile         Profile?
   WorkoutTemplate WorkoutTemplate[]
-  Workout         Workout[]
 }

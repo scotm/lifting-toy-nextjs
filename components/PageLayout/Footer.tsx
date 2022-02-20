@@ -4,7 +4,7 @@ export interface IFooterProps {}
 
 export default function Footer(props: IFooterProps) {
   return (
-    <footer className="m-2 grid grid-cols-3 gap-x-8 gap-y-4">
+    <footer className="m-2 grid gap-x-8 gap-y-4 sm:grid-cols-1 md:grid-cols-3">
       <div className="rounded-lg bg-red-700 p-2 text-white">
         <h4 className="text-xl font-bold">About this software</h4>
         <p>
@@ -14,9 +14,9 @@ export default function Footer(props: IFooterProps) {
           perspiciatis sint et inventore!
         </p>
         <p>
-          Latest source code can be{" "}
+          Latest source code can be
           <Link href="https://github.com/scotm/lifting-toy-nextjs">
-            found on GitHub.
+            <a>found on GitHub.</a>
           </Link>
         </p>
       </div>

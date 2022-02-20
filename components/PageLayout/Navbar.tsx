@@ -1,9 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
+import { useUser } from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import Link from "next/link";
 
 export interface INavbarProps {}
 
 export default function Navbar(props: INavbarProps) {
+  const { user, error, isLoading } = useUser();
+
   return (
     <nav className="bg-slate-800 shadow-lg">
       <div className="mx-auto max-w-5xl px-4">
@@ -45,17 +49,23 @@ export default function Navbar(props: INavbarProps) {
           <div className="hidden items-center space-x-3 md:flex ">
             {/* TODO: Implmement functionality to look up the store/context object and figure
             out if we're a logged in user. */}
-            <a
-              href=""
-              className="rounded py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white"
-            >
-              Log In
-            </a>
-            <Link href="/signup" passHref={true}>
-              <a className="rounded bg-green-500 py-2 px-2 font-medium text-white transition duration-300 hover:bg-green-400">
-                Sign Up
+            {!user && (
+              <a
+                href="/api/auth/login"
+                className="rounded bg-green-600 py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white"
+              >
+                Log In / Sign Up
               </a>
-            </Link>
+            )}
+            {user && user.picture && (
+              <a href="/api/auth/logout">
+                <img
+                  className="h-12 w-12 rounded-full"
+                  src={user.picture}
+                  alt={user.name ?? ""}
+                />
+              </a>
+            )}
           </div>
           <div className="flex items-center md:hidden">
             <button

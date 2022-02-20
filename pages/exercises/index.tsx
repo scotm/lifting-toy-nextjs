@@ -11,14 +11,18 @@ export default function ShowExercises(props: IShowExercisesProps) {
   const [search, setSearch] = useState("");
 
   return (
-    <Layout title="Exercise Picker">
+    <Layout title="Exercise Selection">
       <ExerciseListHeader
         category={category}
         search={search}
         setCategory={setCategory}
         setSearch={setSearch}
       />
-      <ExerciseList category={category} search={search} />
+      <ExerciseList
+        show_description={false}
+        category={category}
+        search={search}
+      />
     </Layout>
   );
 }
