@@ -4,7 +4,6 @@
 - Add a workout ad-hoc.
 - Add a workout with a template as basis.
 - Replace Exercise selection _select_ tag with a proper modal, based on .
-- Pull out RTK Query, more trouble than it's worth?
 
 # User management
 
