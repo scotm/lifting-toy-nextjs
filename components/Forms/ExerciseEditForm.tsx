@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 
 // We don't need to fill out *all* these fields.
 // The API will (eventually) auto-generate the ones missing.
-interface FormExercise
+export interface FormExercise
   extends Omit<
     Exercise,
     | "id"
@@ -118,6 +118,9 @@ export function ExerciseEditForm(props: EditExerciseFormProps) {
         variations: "",
       }}
       onSubmit={async (values) => {
+        if (values.id === 0) {
+          const result = await axios.post(`/api/exercises/`, values);
+        }
         // Stub - will replace this with a call to the API.
         await axios.put(`/api/exercises/${values.id}`, values);
         router.push(`/exercises/${values.id}`);

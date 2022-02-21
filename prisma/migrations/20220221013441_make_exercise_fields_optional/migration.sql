@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Exercise" ALTER COLUMN "name_original" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "creation_date" SET DEFAULT CURRENT_TIMESTAMP;

@@ -48,10 +48,10 @@ model Exercise {
   licenceId              Int
   license_author         String
   name                   String
-  name_original          String
-  status                 String
+  name_original          String?
+  status                 String?
   description            String
-  creation_date          DateTime
+  creation_date          DateTime                 @default(now())
   language               Language                 @relation(fields: [languageId], references: [id])
   languageId             Int
   uuid                   String                   @db.Uuid
