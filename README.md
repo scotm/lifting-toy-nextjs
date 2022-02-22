@@ -8,12 +8,18 @@ First, install the requirements
 npm install
 ```
 
-Connect Your Database
+## Connect Your Database
 
 Edit the .env file and change the DATABASE_URL config to suit your local setup.
 
 ```
 DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+```
+
+I use PostgreSQL, and my hosting provider (understandably) limits my connection pool to around 30, so I add a _connection_limit_ parameter.
+
+```
+DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public&connection_limit=25"
 ```
 
 Then migrate and seed the database
