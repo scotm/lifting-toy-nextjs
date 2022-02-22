@@ -18,22 +18,30 @@ export default async function handler(
         name: exercise.name,
         category: {
           connect: {
-            id: exercise.categoryId,
+            id: parseID(exercise.categoryId),
           },
         },
         description: exercise.description,
         uuid: uuidv4(),
         licence: {
           connect: {
-            id: exercise.licenceId,
+            id: parseID(exercise.licenceId),
           },
         },
         language: {
           connect: {
-            id: exercise.languageId,
+            id: parseID(exercise.languageId),
           },
         },
         license_author: exercise.license_author,
+      },
+    });
+
+    const updateobj: Prisma.ExerciseUpdateArgs = {
+      where: {
+        id: result.id,
+      },
+      data: {
         muscles: {
           connect: exercise.muscles.map((e) => {
             return { id: parseID(e) };
@@ -45,7 +53,9 @@ export default async function handler(
           }),
         },
       },
-    });
+    };
+    await prisma.exercise.update(updateobj);
+
     return res.status(200).json({ id: result.id, message: "ok" });
   }
   // Find the categories

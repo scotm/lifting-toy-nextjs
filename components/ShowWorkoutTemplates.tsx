@@ -21,16 +21,18 @@ export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
   const t1: unknown = data;
   const template = t1 as DisplayTemplate[];
   return (
-    <>
+    <div className="">
       <h2 className="text-center text-3xl font-bold underline">
         Workout Templates
       </h2>
-      <Link href={"/workoutTemplate/new"}>
-        <a className="float-right rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400">
-          + Template
-        </a>
-      </Link>
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+      <p>
+        <Link href={"/workoutTemplate/new"}>
+          <a className="float-right rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400">
+            + Template
+          </a>
+        </Link>
+      </p>
+      <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {template.map((e) => {
           return (
             <div className="border-2 border-red-500 p-2" key={e.id}>
@@ -48,6 +50,6 @@ export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

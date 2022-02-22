@@ -56,7 +56,6 @@ const Home: NextPage = () => {
           </svg>
         </div>
       </div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <ShowWorkoutTemplates />
       <Footer />
     </>

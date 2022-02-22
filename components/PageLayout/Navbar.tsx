@@ -3,11 +3,36 @@ import { useUser } from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import Link from "next/link";
 
+function UserLoginButton() {
+  const { user } = useUser();
+
+  return (
+    <>
+      {!user && (
+        <Link href="/api/auth/login">
+          <a className="rounded	bg-green-600 py-2 px-2 text-lg font-bold text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white">
+            Log In / Sign Up
+          </a>
+        </Link>
+      )}
+      {user && user.picture && (
+        <Link href="/api/auth/logout">
+          <a>
+            <img
+              className="h-12 w-12 rounded-full"
+              src={user.picture}
+              alt={user.name ?? ""}
+            />
+          </a>
+        </Link>
+      )}
+    </>
+  );
+}
+
 export interface INavbarProps {}
 
 export default function Navbar(props: INavbarProps) {
-  const { user, error, isLoading } = useUser();
-
   return (
     <nav className="bg-slate-800 shadow-lg">
       <div className="mx-auto max-w-5xl px-4">
@@ -47,26 +72,7 @@ export default function Navbar(props: INavbarProps) {
             </div>
           </div>
           <div className="hidden items-center space-x-3 md:flex ">
-            {/* TODO: Implmement functionality to look up the store/context object and figure
-            out if we're a logged in user. */}
-            {!user && (
-              <Link href="/api/auth/login">
-                <a className="rounded bg-green-600 py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white">
-                  Log In / Sign Up
-                </a>
-              </Link>
-            )}
-            {user && user.picture && (
-              <Link href="/api/auth/logout">
-                <a>
-                  <img
-                    className="h-12 w-12 rounded-full"
-                    src={user.picture}
-                    alt={user.name ?? ""}
-                  />
-                </a>
-              </Link>
-            )}
+            <UserLoginButton />
           </div>
           <div className="flex items-center md:hidden">
             <button
@@ -95,7 +101,7 @@ export default function Navbar(props: INavbarProps) {
       </div>
       <div className="mobile-menu hidden">
         <ul className="">
-          <li className="active">
+          <li className="">
             <Link href="/" passHref={true}>
               <span className="block bg-green-500 px-2 py-4 text-sm font-semibold text-white">
                 Home
@@ -104,18 +110,22 @@ export default function Navbar(props: INavbarProps) {
           </li>
           <li>
             <Link href="/exercises" passHref={true}>
-              <span className="block px-2 py-4 text-sm transition duration-300 hover:bg-green-500">
+              <span className="block px-2 py-4 text-sm text-white transition duration-300  hover:bg-green-500">
                 Exercises
               </span>
             </Link>
           </li>
           <li>
-            <a
-              href="#contact"
-              className="block px-2 py-4 text-sm transition duration-300 hover:bg-green-500"
-            >
-              Contact Us
-            </a>
+            <Link href="#contact">
+              <a className="block px-2 py-4 text-sm text-white transition duration-300  hover:bg-green-500">
+                Contact Us
+              </a>
+            </Link>
+          </li>
+          <li>
+            <span className="block bg-green-500 px-2 py-4 text-sm font-semibold text-white">
+              <UserLoginButton />
+            </span>
           </li>
         </ul>
       </div>
