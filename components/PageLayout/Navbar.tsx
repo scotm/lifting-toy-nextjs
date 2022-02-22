@@ -50,21 +50,22 @@ export default function Navbar(props: INavbarProps) {
             {/* TODO: Implmement functionality to look up the store/context object and figure
             out if we're a logged in user. */}
             {!user && (
-              <a
-                href="/api/auth/login"
-                className="rounded bg-green-600 py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white"
-              >
-                Log In / Sign Up
-              </a>
+              <Link href="/api/auth/login">
+                <a className="rounded bg-green-600 py-2 px-2 font-medium text-gray-100 transition duration-300 hover:bg-green-500 hover:text-white">
+                  Log In / Sign Up
+                </a>
+              </Link>
             )}
             {user && user.picture && (
-              <a href="/api/auth/logout">
-                <img
-                  className="h-12 w-12 rounded-full"
-                  src={user.picture}
-                  alt={user.name ?? ""}
-                />
-              </a>
+              <Link href="/api/auth/logout">
+                <a>
+                  <img
+                    className="h-12 w-12 rounded-full"
+                    src={user.picture}
+                    alt={user.name ?? ""}
+                  />
+                </a>
+              </Link>
             )}
           </div>
           <div className="flex items-center md:hidden">
