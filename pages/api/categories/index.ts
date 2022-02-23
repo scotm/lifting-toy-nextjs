@@ -1,31 +1,28 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { Category } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../db";
+import { Category } from "../../../entities/Category";
 import parseID from "../../../util/parseID";
+import getEM from "../../../util/getEM";
+import withORM from "../../../util/withORM";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   // TODO: only allow POST and DELETE if they've got a valid authorisation token in the headers
+  const em = getEM();
   if (req.method === "POST") {
-    const { name } = req.body;
-    await prisma.category.create({ data: { name: name } });
+    await em.create(Category, { name: req.body.name });
     return res.status(200).send("Success!");
   }
 
   if (req.method === "DELETE") {
-    await prisma.category.delete({ where: { id: parseID(req.body.id) } });
+    await em.nativeDelete(Category, { id: parseID(req.body.id) });
     return res.status(200).send("Success!");
   }
-
-  const categories = await prisma.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
+  const categories = await em.find(
+    Category,
+    {},
+    { orderBy: { ["name"]: "ASC" } }
+  );
 
   // Find "All" and put it at the top.
   const key = (e: Category) => e.name === "All";
@@ -38,3 +35,5 @@ export default async function handler(
   }
   return res.status(200).json(categories);
 }
+
+export default withORM(handler);

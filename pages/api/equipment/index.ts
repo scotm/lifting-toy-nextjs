@@ -1,30 +1,26 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../db";
 import parseID from "../../../util/parseID";
+import getEM from "../../../util/getEM";
+import withORM from "../../../util/withORM";
+import { Equipment } from "../../../entities/Equipment";
+import show_everything from "../../../util/show_everything";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const em = getEM();
   if (req.method === "POST") {
-    const body = JSON.parse(req.body);
-    const { name } = body;
-    await prisma.equipment.create({ data: { name: name } });
+    await em.create(Equipment, { name: req.body.name });
     return res.status(200).send("Success!");
   }
 
   if (req.method === "DELETE") {
-    await prisma.equipment.delete({ where: { id: parseID(req.body.id) } });
+    await em.nativeDelete(Equipment, { id: parseID(req.body.id) });
     return res.status(200).send("Success!");
   }
 
-  res.status(200).json(
-    await prisma.equipment.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    })
-  );
+  const result = await em.find(Equipment, {}, { orderBy: { ["name"]: "ASC" } });
+  res.status(200).json(result);
 }
+
+export default withORM(handler);

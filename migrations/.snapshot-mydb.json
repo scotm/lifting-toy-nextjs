@@ -1,0 +1,1044 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "WeightUnits",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "WeightUnits_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "firstname": {
+          "name": "firstname",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "lastname": {
+          "name": "lastname",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "age": {
+          "name": "age",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "auth_string": {
+          "name": "auth_string",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "joining_date": {
+          "name": "joining_date",
+          "type": "timestamptz(3)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 3,
+          "mappedType": "datetime"
+        },
+        "passwordhash": {
+          "name": "passwordhash",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "salt": {
+          "name": "salt",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "external_id": {
+          "name": "external_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        }
+      },
+      "name": "User",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "keyName": "User_email_key",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "external_id"
+          ],
+          "composite": false,
+          "keyName": "User_external_id_key",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "User_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "WorkoutTemplate",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "WorkoutTemplate_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "WorkoutTemplate_userId_foreign": {
+          "constraintName": "WorkoutTemplate_userId_foreign",
+          "columnNames": [
+            "userId"
+          ],
+          "localTableName": "public.WorkoutTemplate",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.User",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "RepetitionUnits",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "RepetitionUnits_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "userId": {
+          "name": "userId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "Profile",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "userId"
+          ],
+          "composite": false,
+          "keyName": "Profile_userId_key",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "Profile_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "Profile_userId_foreign": {
+          "constraintName": "Profile_userId_foreign",
+          "columnNames": [
+            "userId"
+          ],
+          "localTableName": "public.Profile",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.User",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "is_front": {
+          "name": "is_front",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "boolean"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "Muscles",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Muscles_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "short_name": {
+          "name": "short_name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "Licence",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Licence_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "short_name": {
+          "name": "short_name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "Language",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Language_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "Equipment",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Equipment_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "day_of_week": {
+          "name": "day_of_week",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "DayOfWeek",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "DayOfWeek_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        }
+      },
+      "name": "Category",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Category_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "licenceId": {
+          "name": "licenceId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "license_author": {
+          "name": "license_author",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "name_original": {
+          "name": "name_original",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "creation_date": {
+          "name": "creation_date",
+          "type": "timestamptz(3)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 3,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "datetime"
+        },
+        "languageId": {
+          "name": "languageId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "categoryId": {
+          "name": "categoryId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "variations": {
+          "name": "variations",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        }
+      },
+      "name": "Exercise",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "Exercise_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "Exercise_licenceId_foreign": {
+          "constraintName": "Exercise_licenceId_foreign",
+          "columnNames": [
+            "licenceId"
+          ],
+          "localTableName": "public.Exercise",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Licence",
+          "updateRule": "cascade"
+        },
+        "Exercise_languageId_foreign": {
+          "constraintName": "Exercise_languageId_foreign",
+          "columnNames": [
+            "languageId"
+          ],
+          "localTableName": "public.Exercise",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Language",
+          "updateRule": "cascade"
+        },
+        "Exercise_categoryId_foreign": {
+          "constraintName": "Exercise_categoryId_foreign",
+          "columnNames": [
+            "categoryId"
+          ],
+          "localTableName": "public.Exercise",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Category",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "exerciseId": {
+          "name": "exerciseId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "workoutTemplateId": {
+          "name": "workoutTemplateId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        }
+      },
+      "name": "TemplateExercisePieces",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "TemplateExercisePieces_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "TemplateExercisePieces_exerciseId_foreign": {
+          "constraintName": "TemplateExercisePieces_exerciseId_foreign",
+          "columnNames": [
+            "exerciseId"
+          ],
+          "localTableName": "public.TemplateExercisePieces",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Exercise",
+          "updateRule": "cascade"
+        },
+        "TemplateExercisePieces_workoutTemplateId_foreign": {
+          "constraintName": "TemplateExercisePieces_workoutTemplateId_foreign",
+          "columnNames": [
+            "workoutTemplateId"
+          ],
+          "localTableName": "public.TemplateExercisePieces",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.WorkoutTemplate",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "reps": {
+          "name": "reps",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "repetitionUnitsId": {
+          "name": "repetitionUnitsId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "templateExerciseId": {
+          "name": "templateExerciseId",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "RepPair",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "RepPair_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "RepPair_repetitionUnitsId_foreign": {
+          "constraintName": "RepPair_repetitionUnitsId_foreign",
+          "columnNames": [
+            "repetitionUnitsId"
+          ],
+          "localTableName": "public.RepPair",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.RepetitionUnits",
+          "updateRule": "cascade"
+        },
+        "RepPair_templateExerciseId_foreign": {
+          "constraintName": "RepPair_templateExerciseId_foreign",
+          "columnNames": [
+            "templateExerciseId"
+          ],
+          "localTableName": "public.RepPair",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.TemplateExercisePieces",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "A": {
+          "name": "A",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "B": {
+          "name": "B",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "_ExerciseToMuscles",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "_ExerciseToMuscles_pkey",
+          "columnNames": [
+            "A",
+            "B"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "_ExerciseToMuscles_A_foreign": {
+          "constraintName": "_ExerciseToMuscles_A_foreign",
+          "columnNames": [
+            "A"
+          ],
+          "localTableName": "public._ExerciseToMuscles",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Exercise",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "_ExerciseToMuscles_B_foreign": {
+          "constraintName": "_ExerciseToMuscles_B_foreign",
+          "columnNames": [
+            "B"
+          ],
+          "localTableName": "public._ExerciseToMuscles",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Muscles",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "B": {
+          "name": "B",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "A": {
+          "name": "A",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "_EquipmentToExercise",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "_EquipmentToExercise_pkey",
+          "columnNames": [
+            "B",
+            "A"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "_EquipmentToExercise_B_foreign": {
+          "constraintName": "_EquipmentToExercise_B_foreign",
+          "columnNames": [
+            "B"
+          ],
+          "localTableName": "public._EquipmentToExercise",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Exercise",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "_EquipmentToExercise_A_foreign": {
+          "constraintName": "_EquipmentToExercise_A_foreign",
+          "columnNames": [
+            "A"
+          ],
+          "localTableName": "public._EquipmentToExercise",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.Equipment",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    }
+  ]
+}
