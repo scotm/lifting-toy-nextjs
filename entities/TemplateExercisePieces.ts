@@ -1,5 +1,6 @@
-import { Entity, ManyToOne, PrimaryKey } from "@mikro-orm/core";
+import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey } from "@mikro-orm/core";
 import { Exercise } from "./Exercise";
+import { RepPair } from "./RepPair";
 import { WorkoutTemplate } from "./WorkoutTemplate";
 
 @Entity({ tableName: "TemplateExercisePieces" })
@@ -11,8 +12,8 @@ export class TemplateExercisePieces {
     entity: () => Exercise,
     fieldName: "exerciseId",
     onUpdateIntegrity: "cascade",
-  })
-  exerciseId!: Exercise;
+  })  
+  exercise!: Exercise;
 
   @ManyToOne({
     entity: () => WorkoutTemplate,
@@ -21,5 +22,8 @@ export class TemplateExercisePieces {
     onDelete: "set null",
     nullable: true,
   })
-  workoutTemplateId?: WorkoutTemplate;
+  workoutTemplate?: WorkoutTemplate;
+
+  @OneToMany(() => RepPair,(rep_pair) => rep_pair.templateExercise)
+  rep_pair = new Collection<RepPair>(this);
 }

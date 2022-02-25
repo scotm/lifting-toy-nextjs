@@ -1,15 +1,14 @@
-import {
-  Category,
-  Equipment,
-  Exercise,
-  Language,
-  Licence,
-  Muscles,
-  RepetitionUnits,
-  WeightUnits,
-  WorkoutTemplate,
-} from "@prisma/client";
-import { MyExercise } from "../types/ExerciseTypes";
+import { Category } from "../entities/Category";
+import { Equipment } from "../entities/Equipment";
+import { Exercise } from "../entities/Exercise";
+import { Language } from "../entities/Language";
+import { Licence } from "../entities/Licence";
+import { Muscles } from "../entities/Muscles";
+import { RepetitionUnits } from "../entities/RepetitionUnits";
+import { WeightUnits } from "../entities/WeightUnits";
+import { WorkoutTemplate } from "../entities/WorkoutTemplate";
+import { MyWorkoutTemplate } from "../types/ExerciseTypes";
+// import { MyExercise } from "../types/ExerciseTypes";
 
 async function fetchType<T>(url: string) {
   const data = await fetch(url).then((res) => {
@@ -28,8 +27,8 @@ export async function fetchCategories(): Promise<Category[]> {
 export async function fetchExercises(
   category: string,
   search: string
-): Promise<MyExercise[]> {
-  return fetchType<MyExercise[]>(
+): Promise<Exercise[]> {
+  return fetchType<Exercise[]>(
     `/api/exercises?category=${category}${
       search === "" ? "" : `&search=${search}`
     }`
@@ -38,38 +37,38 @@ export async function fetchExercises(
 
 export async function fetchExerciseByID(
   id: string | string[] | undefined | number
-): Promise<MyExercise> {
-  return fetchType<MyExercise>(`/api/exercises/${id}`);
+): Promise<Exercise> {
+  return fetchType<Exercise>(`/api/exercises/${id}`);
 }
 
 export async function fetchAllExercises(): Promise<Exercise[]> {
-  return fetchType<MyExercise[]>("/api/exercises");
+  return fetchType<Exercise[]>("/api/exercises");
 }
 
 export async function fetchRepetitionUnits(): Promise<RepetitionUnits[]> {
   return fetchType<RepetitionUnits[]>("/api/repetitionunits");
 }
 
-export async function fetchWeightUnits() {
+export async function fetchWeightUnits(): Promise<WeightUnits[]> {
   return fetchType<WeightUnits[]>("/api/weightunits");
 }
 
-export async function fetchMuscles() {
+export async function fetchMuscles(): Promise<Muscles[]> {
   return fetchType<Muscles[]>("/api/muscles");
 }
 
-export async function fetchEquipment() {
+export async function fetchEquipment(): Promise<Equipment[]> {
   return fetchType<Equipment[]>("/api/equipment");
 }
 
-export async function fetchLanguages() {
+export async function fetchLanguages(): Promise<Language[]> {
   return fetchType<Language[]>("/api/languages");
 }
 
-export async function fetchLicences() {
+export async function fetchLicences(): Promise<Licence[]> {
   return fetchType<Licence[]>("/api/licences");
 }
 
-export async function fetchWorkoutTemplates() {
-  return fetchType<WorkoutTemplate[]>("/api/workouttemplate");
+export async function fetchWorkoutTemplates(): Promise<MyWorkoutTemplate[]> {
+  return fetchType<MyWorkoutTemplate[]>("/api/workouttemplate");
 }

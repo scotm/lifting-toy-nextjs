@@ -36,6 +36,7 @@ export const mainConfig: Options = {
   dbName: "mydb",
   user: "scotm",
   type: "postgresql", // one of `mongo` | `mysql` | `mariadb` | `postgresql` | `sqlite`
+  debug: true,
 };
 
 // Use an in-memory sqlite db if we're testing

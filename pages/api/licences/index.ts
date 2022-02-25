@@ -1,17 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../db";
+import { Licence } from "../../../entities/Licence";
+import getEM from "../../../util/getEM";
+import withORM from "../../../util/withORM";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  return res.status(200).json(
-    await prisma.licence.findMany({
-      orderBy: {
-        id: "asc",
-      },
-    })
-  );
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const em = getEM();
+  return res
+    .status(200)
+    .json(await em.find(Licence, {}, { orderBy: { ["fullName"]: "ASC" } }));
 }
+
+export default withORM(handler);

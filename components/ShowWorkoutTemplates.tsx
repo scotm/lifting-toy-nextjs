@@ -1,28 +1,20 @@
-import { Exercise, WorkoutTemplate } from "@prisma/client";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { fetchWorkoutTemplates } from "../api-services";
-import {
-  MyTemplateExercisePieces,
-  MyWorkoutTemplate,
-} from "../types/ExerciseTypes";
 
-interface DisplayTemplate extends MyWorkoutTemplate {
-  id: number;
+export interface ShowWorkoutTemplatesProps {
+  className?: string
 }
 
-export interface ShowWorkoutTemplatesProps {}
-
 export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
-  const { data } = useQuery("workouttemplates", fetchWorkoutTemplates);
-  if (!data) {
+  const { data: templates } = useQuery("workouttemplates", fetchWorkoutTemplates);
+  if (!templates) {
     return null;
   }
-  const t1: unknown = data;
-  const template = t1 as DisplayTemplate[];
+
   return (
-    <div className="">
-      <h2 className="text-center text-3xl font-bold underline">
+    <div {...props}>
+      <h2 className="text-center text-3xl font-bold underline my-4">
         Workout Templates
       </h2>
       <p>
@@ -33,15 +25,15 @@ export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
         </Link>
       </p>
       <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        {template.map((e) => {
+        {templates.map((e) => {
           return (
             <div className="border-2 border-red-500 p-2" key={e.id}>
-              <h3 className="text-center text-2xl font-bold underline">
+              <h3 className="text-center text-2xl font-bold">
                 {e.name}
               </h3>
               <ul>
-                {e.pieces.map((j: any) => (
-                  <li key={j.exerciseId}>
+                {e.pieces.map((j) => (
+                  <li key={j.exercise.id}>
                     {j.rep_pair.length} x {j.exercise.name}
                   </li>
                 ))}

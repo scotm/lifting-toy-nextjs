@@ -1,30 +1,27 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../db";
 import parseID from "../../../util/parseID";
+import getEM from "../../../util/getEM";
+import withORM from "../../../util/withORM";
+import { Muscles } from "../../../entities/Muscles";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const em = getEM();
   if (req.method === "POST") {
-    const body = JSON.parse(req.body);
-    const { name, is_front } = body;
-    await prisma.muscles.create({ data: { name: name, is_front: true } });
+    const { name, isFront } = req.body;
+    await em.create(Muscles, { name: name, isFront: isFront });
     return res.status(200).send("Success!");
   }
 
   if (req.method === "DELETE") {
-    await prisma.muscles.delete({ where: { id: parseID(req.body.id) } });
+    await em.nativeDelete(Muscles, { id: parseID(req.body.id) });
     return res.status(200).send("Success!");
   }
 
-  res.status(200).json(
-    await prisma.muscles.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    })
-  );
+  res
+    .status(200)
+    .json(await em.find(Muscles, {}, { orderBy: { ["name"]: "ASC" } }));
 }
+
+export default withORM(handler);

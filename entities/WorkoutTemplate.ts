@@ -1,4 +1,12 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import {
+  Collection,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from "@mikro-orm/core";
+import { TemplateExercisePieces } from "./TemplateExercisePieces";
 import { User } from "./User";
 
 @Entity({ tableName: "WorkoutTemplate" })
@@ -14,5 +22,8 @@ export class WorkoutTemplate {
     fieldName: "userId",
     onUpdateIntegrity: "cascade",
   })
-  userId!: User;
+  user!: User;
+
+  @OneToMany(() => TemplateExercisePieces, (pieces) => pieces.workoutTemplate)
+  pieces = new Collection<TemplateExercisePieces>(this);
 }

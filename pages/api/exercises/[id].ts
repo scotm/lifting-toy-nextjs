@@ -12,7 +12,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       {
         id: parseID(req.query.id),
       },
-      { populate: ["muscles", "category", "licence", "equipment"] }
+      {
+        populate: ["muscles", "category", "licence", "equipment"],
+        orderBy: { ["name"]: "ASC" },
+      }
     );
     if (!result) {
       return res.status(404).send("Not Found");
@@ -20,6 +23,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(result);
   } else if (req.method === "PUT") {
     // TODO: Validation
+
     // await prisma.exercise.update({
     //   where: { id: req.body.id },
     //   data: {

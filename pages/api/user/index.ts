@@ -1,33 +1,24 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../db";
+import { User } from "../../../entities/User";
+import getEM from "../../../util/getEM";
 import parseID from "../../../util/parseID";
+import withORM from "../../../util/withORM";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Create workout template
-  // if (req.method === "POST") {
-  //   const body = JSON.parse(req.body);
-  //   const { name } = body;
-  //   await prisma.workoutTemplate.create({ data: { name: name, userId: 1 } });
-  //   return res.status(200).send("Success!");
-  // }
-
+  const em = getEM();
   if (req.method === "DELETE") {
-    await prisma.workoutTemplate.delete({
-      where: { id: parseID(req.body.id) },
-    });
+    await em.nativeDelete(User, { id: parseID(req.body.id) })
     return res.status(200).send("Success!");
   }
 
   res.status(200).json(
-    await prisma.workoutTemplate.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    })
+    await em.find(User, {},{ orderBy: { ["lastname"]: "ASC" } })
   );
 }
+
+export default withORM(handler);

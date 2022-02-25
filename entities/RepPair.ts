@@ -15,12 +15,12 @@ export class RepPair {
     fieldName: "repetitionUnitsId",
     onUpdateIntegrity: "cascade",
   })
-  repetitionUnitsId!: RepetitionUnits;
+  repetitionUnits!: RepetitionUnits;
 
   @ManyToOne({
     entity: () => TemplateExercisePieces,
     fieldName: "templateExerciseId",
     onUpdateIntegrity: "cascade",
   })
-  templateExerciseId!: TemplateExercisePieces;
+  templateExercise!: TemplateExercisePieces;
 }
