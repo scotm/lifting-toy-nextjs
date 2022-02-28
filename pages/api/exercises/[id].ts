@@ -1,24 +1,37 @@
+import { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../db";
 import parseID from "../../../util/parseID";
+
+// Handy documentation for Prisma.PromiseReturnType
+// https://www.prisma.io/docs/concepts/components/prisma-client/advanced-type-safety/operating-against-partial-structures-of-model-types#problem-getting-access-to-the-return-type-of-a-function
+
+export type ExerciseFromIDReturnType = Prisma.PromiseReturnType<
+  typeof getExercise
+>;
+
+async function getExercise(id: string | number | string[] | undefined) {
+  return await prisma.exercise.findUnique({
+    where: {
+      id: parseID(id),
+    },
+    // Pull in related data
+    include: {
+      licence: true,
+      category: true,
+      muscles: true,
+      equipment: true,
+    },
+  });
+}
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const result = await prisma.exercise.findUnique({
-      where: {
-        id: parseID(req.query.id),
-      },
-      // Pull in related data
-      include: {
-        licence: true,
-        category: true,
-        muscles: true,
-        equipment: true,
-      },
-    });
+    const result = getExercise(req.query.id);
+
     if (!result) {
       return res.status(404).send("Not Found");
     }

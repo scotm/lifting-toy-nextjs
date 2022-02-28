@@ -7,6 +7,56 @@ import prisma from "../../../db";
 import { v4 as uuidv4 } from "uuid";
 import parseID from "../../../util/parseID";
 
+export type ExercisesReturnType = Prisma.PromiseReturnType<typeof getExercises>;
+
+async function getExercises(category: string, search: string) {
+  // Construct the where object - using the category as filter
+  const whereobj: Prisma.ExerciseWhereInput = {};
+  if (typeof category === "string" && category !== "All") {
+    whereobj.category = {
+      name: category,
+    };
+  }
+
+  // Case-insensitive search - look inside equipment and muscles
+  if (search !== undefined) {
+    whereobj.OR = [
+      {
+        name: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+      {
+        equipment: {
+          some: {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        },
+      },
+    ];
+  }
+
+  // Pull in related data
+  const includeobj = {
+    licence: true,
+    category: true,
+    muscles: true,
+    equipment: true,
+  };
+  const result = await prisma.exercise.findMany({
+    include: includeobj,
+    where: whereobj,
+    orderBy: {
+      name: "asc",
+    },
+  });
+  return result;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -58,59 +108,17 @@ export default async function handler(
 
     return res.status(200).json({ id: result.id, message: "ok" });
   }
+
+  function string_or_first(n: string | string[]): string {
+    return Array.isArray(n) ? n[0] : n;
+  }
+
   // Find the categories
-  const category = req.query?.category;
+  const category = string_or_first(req.query.category);
 
   // Pull out the search, and de-fang the type guard
-  const search = Array.isArray(req.query.search)
-    ? req.query.search[0]
-    : req.query.search;
+  const search = string_or_first(req.query.search);
 
-  // Construct the where object - using the category as filter
-  const whereobj: Prisma.ExerciseWhereInput = {};
-  if (typeof category === "string" && category !== "All") {
-    whereobj.category = {
-      name: category,
-    };
-  }
-
-  // Case-insensitive search - look inside equipment and muscles
-  if (search !== undefined) {
-    whereobj.OR = [
-      {
-        name: {
-          contains: search,
-          mode: "insensitive",
-        },
-      },
-      {
-        equipment: {
-          some: {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        },
-      },
-    ];
-  }
-
-  // Pull in related data
-  const includeobj = {
-    licence: true,
-    category: true,
-    muscles: true,
-    equipment: true,
-  };
-
-  res.status(200).json(
-    await prisma.exercise.findMany({
-      include: includeobj,
-      where: whereobj,
-      orderBy: {
-        name: "asc",
-      },
-    })
-  );
+  const result = getExercises(category, search);
+  res.status(200).json(result);
 }

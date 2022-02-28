@@ -1,4 +1,5 @@
 import { useUser } from "@auth0/nextjs-auth0";
+import { RepPair } from "@prisma/client";
 import axios from "axios";
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
@@ -8,32 +9,31 @@ import {
   fetchRepetitionUnits,
   fetchWeightUnits,
 } from "../../api-services";
-import {
-  MyRepPair,
-  MyTemplateExercisePieces,
-  MyWorkoutTemplate,
-} from "../../types/ExerciseTypes";
+import { WorkoutTemplateReturnType } from "../../pages/api/api-types";
 import { MySelectField, MyTextField } from "../FormComponents";
 
-const default_rep_pair: MyRepPair = {
+interface FormInput extends Omit<WorkoutTemplateReturnType, "id" | "userId"> {}
+type FormError = Partial<{ [day in keyof WorkoutTemplateReturnType]: string }>;
+
+const default_rep_pair: Partial<RepPair> = {
   reps: 10,
   repetitionUnitsId: 1,
 };
 
-type FormError = Partial<{ [day in keyof MyWorkoutTemplate]: string }>;
-
-function validate(values: MyWorkoutTemplate): FormError {
+function validate(values: FormInput): FormError {
   const errors: FormError = {};
   if (!values.name) {
     errors.name = "Please give this workout a name";
   }
-  if (values.pieces.length === 0) {
-    errors.pieces =
-      "There should be at least one exercise in a workout template";
-  }
-  if (values.pieces.some((piece) => piece.rep_pair.length === 0)) {
-    errors.pieces =
-      "There are exercises in this template, without a specific workload. Add a working set to it.";
+  if (values.pieces) {
+    if (values.pieces.length === 0) {
+      errors.pieces =
+        "There should be at least one exercise in a workout template";
+    }
+    if (values.pieces.some((piece) => piece.rep_pair.length === 0)) {
+      errors.pieces =
+        "There are exercises in this template, without a specific workload. Add a working set to it.";
+    }
   }
   return errors;
 }
@@ -70,24 +70,19 @@ interface WorkoutTemplateFormProps {}
 
 export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
   const { user } = useUser();
+  const router = useRouter();
   const { data: exercises } = useQuery("exercises", fetchAllExercises);
   const { data: repetitionunits } = useQuery(
     "repetitionunits",
     fetchRepetitionUnits
   );
   const { data: weightunits } = useQuery("weightunits", fetchWeightUnits);
-  const router = useRouter();
 
-  if (
-    exercises === undefined ||
-    exercises.length === 0 ||
-    repetitionunits === undefined ||
-    weightunits == undefined
-  ) {
+  if (!exercises || exercises.length == 0 || !repetitionunits || !weightunits) {
     return null;
   }
 
-  const initialValues: MyWorkoutTemplate = {
+  const initialValues: { name: string; pieces: any[] } = {
     name: "",
     pieces: [{ exerciseId: exercises[0].id, rep_pair: [default_rep_pair] }],
   };
@@ -188,7 +183,7 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
                       className="rounded-xl bg-red-500 py-2 px-6 text-white shadow-xl transition duration-300 hover:bg-red-400"
                       type="button"
                       onClick={() => {
-                        const workoutpiece: MyTemplateExercisePieces = {
+                        const workoutpiece = {
                           exerciseId: exercises[0].id,
                           rep_pair: new Array(1).fill(default_rep_pair),
                         };

@@ -1,11 +1,11 @@
 import { PencilAltIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { MyExercise } from "../types/ExerciseTypes";
+import { ExerciseFromIDReturnType } from "../api-services/types";
 import ExerciseAdditional from "./ExerciseAdditional";
 
 export interface IExerciseComponentProps {
-  exercise: MyExercise;
+  exercise: ExerciseFromIDReturnType;
   edit?: boolean;
   show_description?: boolean;
   link_to?: boolean;

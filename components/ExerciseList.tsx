@@ -20,8 +20,10 @@ export default function ExerciseList(props: IExerciseListProps) {
     fetchExercises(category, search)
   );
   if (isLoading) return <div>Loading...</div>;
-  if (error)
+  if (error) {
     return <div>There was an error getting the list of exercises.</div>;
+  }
+
   if (exercises === undefined) return <div></div>;
 
   edit = edit === undefined ? true : edit;

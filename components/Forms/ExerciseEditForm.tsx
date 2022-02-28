@@ -156,7 +156,7 @@ export function ExerciseCreateForm() {
     <ExerciseForm
       validate={validate}
       initialValues={initialValues}
-      onSubmit={async (values: any) => {
+      onSubmit={async (values) => {
         const result = await axios.post(`/api/exercises/`, values);
         console.log(result);
       }}
@@ -164,14 +164,18 @@ export function ExerciseCreateForm() {
   );
 }
 
-export function ExerciseEditForm(props: any) {
+interface ExerciseEditFormProps {
+  id: number;
+}
+
+export function ExerciseEditForm(props: ExerciseEditFormProps) {
   // Pull in the data from API calls
   const { data: exercise } = useQuery(["exercise", props.id], () =>
     fetchExerciseByID(props.id)
   );
   const router = useRouter();
 
-  if (exercise === undefined) {
+  if (!exercise) {
     return null;
   }
 

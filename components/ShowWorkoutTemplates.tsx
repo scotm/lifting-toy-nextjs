@@ -1,15 +1,7 @@
-import { Exercise, WorkoutTemplate } from "@prisma/client";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { fetchWorkoutTemplates } from "../api-services";
-import {
-  MyTemplateExercisePieces,
-  MyWorkoutTemplate,
-} from "../types/ExerciseTypes";
-
-interface DisplayTemplate extends MyWorkoutTemplate {
-  id: number;
-}
+import { WorkoutTemplateReturnType } from "../api-services/types";
 
 export interface ShowWorkoutTemplatesProps {}
 
@@ -19,7 +11,7 @@ export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
     return null;
   }
   const t1: unknown = data;
-  const template = t1 as DisplayTemplate[];
+  const template = t1 as WorkoutTemplateReturnType;
   return (
     <div className="">
       <h2 className="text-center text-3xl font-bold underline">
@@ -40,7 +32,7 @@ export default function ShowWorkoutTemplates(props: ShowWorkoutTemplatesProps) {
                 {e.name}
               </h3>
               <ul>
-                {e.pieces.map((j: any) => (
+                {e.pieces.map((j) => (
                   <li key={j.exerciseId}>
                     {j.rep_pair.length} x {j.exercise.name}
                   </li>

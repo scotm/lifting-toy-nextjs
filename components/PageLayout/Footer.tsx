@@ -8,12 +8,6 @@ export default function Footer(props: IFooterProps) {
       <div className="rounded-lg bg-red-700 p-2 text-white">
         <h4 className="text-xl font-bold">About this software</h4>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas illo,
-          expedita amet, tempora, minima possimus debitis eos quidem adipisci
-          ducimus eligendi voluptatum exercitationem harum pariatur saepe
-          perspiciatis sint et inventore!
-        </p>
-        <p>
           Latest source code can be
           <Link href="https://github.com/scotm/lifting-toy-nextjs">
             <a>found on GitHub.</a>

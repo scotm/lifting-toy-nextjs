@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 export interface IAppProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   title?: string;
 }
 
@@ -17,7 +17,7 @@ export default function Layout(props: IAppProps) {
         <h1 className="text-center text-4xl font-extrabold">
           {props.title ?? "Default Title"}
         </h1>
-        {props.children}
+        {props.children ?? ""}
         <Footer></Footer>
       </div>
     </>

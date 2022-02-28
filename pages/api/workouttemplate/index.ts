@@ -1,13 +1,40 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import { getSession, Session, withApiAuthRequired } from "@auth0/nextjs-auth0";
+import { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { WorkoutTemplateSingle } from "../../../api-services/types";
 import prisma from "../../../db";
-import {
-  MyTemplateExercisePieces,
-  MyWorkoutTemplate,
-} from "../../../types/ExerciseTypes";
 import parseID from "../../../util/parseID";
+
+export type UserWorkoutTemplatesReturnType = Prisma.PromiseReturnType<
+  typeof getUserWorkoutTemplates
+>;
+
+async function getUserWorkoutTemplates(session: Session) {
+  return await prisma.workoutTemplate.findMany({
+    where: {
+      user: {
+        external_id: session.user.sub,
+      },
+    },
+    include: {
+      pieces: {
+        include: {
+          exercise: true,
+          rep_pair: {
+            include: {
+              reptype: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+}
 
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
@@ -30,7 +57,7 @@ export default withApiAuthRequired(async function handler(
       return res.status(500).send("There is no such user in the database");
     }
 
-    const body = req.body as MyWorkoutTemplate;
+    const body = req.body as WorkoutTemplateSingle;
     const { name, pieces } = body;
 
     // Big, hairy workout template creator
@@ -39,7 +66,7 @@ export default withApiAuthRequired(async function handler(
         name: name,
         userId: user.id,
         pieces: {
-          create: pieces.map((e: MyTemplateExercisePieces) => {
+          create: pieces.map((e) => {
             return {
               exerciseId: parseID(e.exerciseId),
               rep_pair: {
@@ -69,28 +96,5 @@ export default withApiAuthRequired(async function handler(
     return res.status(200).json([]);
   }
 
-  return res.status(200).json(
-    await prisma.workoutTemplate.findMany({
-      where: {
-        user: {
-          external_id: session.user.sub,
-        },
-      },
-      include: {
-        pieces: {
-          include: {
-            exercise: true,
-            rep_pair: {
-              include: {
-                reptype: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: "asc",
-      },
-    })
-  );
+  return res.status(200).json(getUserWorkoutTemplates(session));
 });

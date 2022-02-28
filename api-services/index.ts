@@ -1,15 +1,15 @@
 import {
   Category,
   Equipment,
-  Exercise,
   Language,
   Licence,
   Muscles,
   RepetitionUnits,
   WeightUnits,
-  WorkoutTemplate,
 } from "@prisma/client";
-import { MyExercise } from "../types/ExerciseTypes";
+import { ExercisesReturnType } from "../pages/api/exercises";
+import { ExerciseFromIDReturnType } from "../pages/api/exercises/[id]";
+import { WorkoutTemplateReturnType } from "./types";
 
 async function fetchType<T>(url: string) {
   const data = await fetch(url).then((res) => {
@@ -28,8 +28,8 @@ export async function fetchCategories(): Promise<Category[]> {
 export async function fetchExercises(
   category: string,
   search: string
-): Promise<MyExercise[]> {
-  return fetchType<MyExercise[]>(
+): Promise<ExercisesReturnType> {
+  return fetchType<ExercisesReturnType>(
     `/api/exercises?category=${category}${
       search === "" ? "" : `&search=${search}`
     }`
@@ -38,12 +38,12 @@ export async function fetchExercises(
 
 export async function fetchExerciseByID(
   id: string | string[] | undefined | number
-): Promise<MyExercise> {
-  return fetchType<MyExercise>(`/api/exercises/${id}`);
+): Promise<ExerciseFromIDReturnType> {
+  return fetchType<ExerciseFromIDReturnType>(`/api/exercises/${id}`);
 }
 
-export async function fetchAllExercises(): Promise<Exercise[]> {
-  return fetchType<MyExercise[]>("/api/exercises");
+export async function fetchAllExercises(): Promise<ExercisesReturnType> {
+  return fetchType<ExercisesReturnType>("/api/exercises");
 }
 
 export async function fetchRepetitionUnits(): Promise<RepetitionUnits[]> {
@@ -71,5 +71,5 @@ export async function fetchLicences() {
 }
 
 export async function fetchWorkoutTemplates() {
-  return fetchType<WorkoutTemplate[]>("/api/workouttemplate");
+  return fetchType<WorkoutTemplateReturnType>("/api/workouttemplate");
 }

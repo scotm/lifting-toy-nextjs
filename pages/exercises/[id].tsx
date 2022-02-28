@@ -11,9 +11,11 @@ export default function ExerciseView() {
   const { data: exercise } = useQuery(["exercise", id], () =>
     fetchExerciseByID(id)
   );
-  if (exercise === undefined) {
+
+  if (!exercise) {
     return null;
   }
+
   return (
     <Layout title={exercise.name}>
       <Exercise exercise={exercise} edit={true} show_description={true} />
