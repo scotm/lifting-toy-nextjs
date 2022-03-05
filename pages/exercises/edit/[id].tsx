@@ -9,7 +9,7 @@ export default function EditExercise() {
   const [title, setTitle] = useState("Editing ");
   return (
     <Layout title={title}>
-      <ExerciseEditForm id={parseID(router.query.id)} setTitle={setTitle} />
+      <ExerciseEditForm id={parseID(router.query.id)} />
     </Layout>
   );
 }

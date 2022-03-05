@@ -5,5 +5,6 @@ export type { WorkoutTemplateReturnType } from "./workouttemplate/[id]";
 export type { UserWorkoutTemplatesReturnType } from "./workouttemplate/index";
 
 export default async function handler(_: NextApiRequest, res: NextApiResponse) {
-  return res.status(501).send("This has not been implemented");
+  // Nope. This is just a type mini-barrel, not an API endpoint.
+  return res.status(418).send("This has not been implemented");
 }

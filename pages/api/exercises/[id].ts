@@ -30,7 +30,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const result = getExercise(req.query.id);
+    const result = await getExercise(req.query.id);
 
     if (!result) {
       return res.status(404).send("Not Found");

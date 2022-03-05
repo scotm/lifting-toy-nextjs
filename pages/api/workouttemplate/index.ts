@@ -3,7 +3,6 @@
 import { getSession, Session, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { WorkoutTemplateSingle } from "../../../api-services/types";
 import prisma from "../../../db";
 import parseID from "../../../util/parseID";
 
@@ -40,9 +39,10 @@ export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Create workout template
+  const session = getSession(req, res);
+
   if (req.method === "POST") {
-    const session = getSession(req, res);
+    // Create workout template
     if (!session) {
       return res.status(500).send("Not logged in, cannot accept user data");
     }
@@ -57,7 +57,7 @@ export default withApiAuthRequired(async function handler(
       return res.status(500).send("There is no such user in the database");
     }
 
-    const body = req.body as WorkoutTemplateSingle;
+    const body = req.body as any;
     const { name, pieces } = body;
 
     // Big, hairy workout template creator
@@ -66,7 +66,7 @@ export default withApiAuthRequired(async function handler(
         name: name,
         userId: user.id,
         pieces: {
-          create: pieces.map((e) => {
+          create: pieces.map((e: any) => {
             return {
               exerciseId: parseID(e.exerciseId),
               rep_pair: {
@@ -91,10 +91,10 @@ export default withApiAuthRequired(async function handler(
     return res.status(200).send("Success!");
   }
 
-  const session = getSession(req, res);
   if (!session) {
     return res.status(200).json([]);
   }
-
-  return res.status(200).json(getUserWorkoutTemplates(session));
+  const result = await getUserWorkoutTemplates(session);
+  console.log(result);
+  return res.status(200).json(result);
 });

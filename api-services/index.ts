@@ -7,9 +7,12 @@ import {
   RepetitionUnits,
   WeightUnits,
 } from "@prisma/client";
+import {
+  UserWorkoutTemplatesReturnType,
+  WorkoutTemplateReturnType,
+} from "../pages/api/api-types";
 import { ExercisesReturnType } from "../pages/api/exercises";
 import { ExerciseFromIDReturnType } from "../pages/api/exercises/[id]";
-import { WorkoutTemplateReturnType } from "./types";
 
 async function fetchType<T>(url: string) {
   const data = await fetch(url).then((res) => {
@@ -71,5 +74,11 @@ export async function fetchLicences() {
 }
 
 export async function fetchWorkoutTemplates() {
-  return fetchType<WorkoutTemplateReturnType>("/api/workouttemplate");
+  return fetchType<UserWorkoutTemplatesReturnType>("/api/workouttemplate");
+}
+
+export async function fetchWorkoutTemplatebyID(
+  id: string | string[] | undefined | number
+): Promise<WorkoutTemplateReturnType> {
+  return fetchType<WorkoutTemplateReturnType>(`/api/workouttemplate/${id}`);
 }

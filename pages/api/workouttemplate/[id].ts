@@ -34,7 +34,7 @@ export default async function handler(
 ) {
   let result;
   try {
-    result = getWorkoutTemplate(parseID(req.query.id));
+    result = await getWorkoutTemplate(parseID(req.query.id));
   } catch {
     return res.status(404).send("Workout Template not found");
   }

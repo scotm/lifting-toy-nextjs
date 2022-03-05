@@ -1,7 +1,7 @@
 import { PencilAltIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { ExerciseFromIDReturnType } from "../api-services/types";
+import { ExerciseFromIDReturnType } from "../pages/api/api-types";
 import ExerciseAdditional from "./ExerciseAdditional";
 
 export interface IExerciseComponentProps {
@@ -13,6 +13,7 @@ export interface IExerciseComponentProps {
 
 export default function ExerciseComponent(props: IExerciseComponentProps) {
   const { exercise: e, edit, show_description, link_to } = props;
+  if (!e) return null;
   return (
     <div key={e.id} className="p-4">
       {link_to ? (

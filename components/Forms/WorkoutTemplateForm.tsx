@@ -1,5 +1,4 @@
 import { useUser } from "@auth0/nextjs-auth0";
-import { RepPair } from "@prisma/client";
 import axios from "axios";
 import { ArrayHelpers, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
@@ -15,7 +14,12 @@ import { MySelectField, MyTextField } from "../FormComponents";
 interface FormInput extends Omit<WorkoutTemplateReturnType, "id" | "userId"> {}
 type FormError = Partial<{ [day in keyof WorkoutTemplateReturnType]: string }>;
 
-const default_rep_pair: Partial<RepPair> = {
+interface RepPairSubset {
+  reps: number;
+  repetitionUnitsId: number;
+}
+
+const default_rep_pair: RepPairSubset = {
   reps: 10,
   repetitionUnitsId: 1,
 };
@@ -92,11 +96,9 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
       initialValues={initialValues}
       enableReinitialize={true}
       onSubmit={async (values, formikhelpers) => {
-        // alert(JSON.stringify(values, null, 2));
         console.log(values);
-        // Stub - will replace this with a call to the API.
         const response = await axios.post(`/api/workouttemplate/`, values);
-        // router.push(`/exercises/${values.id}`);
+        router.push(`/workoutTemplate/${response.data.id}`);
         formikhelpers.setSubmitting(false);
       }}
       validate={validate}
@@ -145,7 +147,7 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
                               </div>
                             )}
 
-                            {value.rep_pair.map((e, i) => (
+                            {value.rep_pair.map((_, i) => (
                               <div
                                 key={`pieces.${index}.rep_pair.${i}`}
                                 className={`col-span-4 grid grid-cols-4 gap-2`}

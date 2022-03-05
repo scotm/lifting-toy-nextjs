@@ -18,7 +18,7 @@ async function getExercises(category: string, search: string) {
     };
   }
 
-  // Case-insensitive search - look inside equipment and muscles
+  // Case-insensitive search - look at nam and inside equipment
   if (search !== undefined) {
     whereobj.OR = [
       {
@@ -119,6 +119,6 @@ export default async function handler(
   // Pull out the search, and de-fang the type guard
   const search = string_or_first(req.query.search);
 
-  const result = getExercises(category, search);
+  const result = await getExercises(category, search);
   res.status(200).json(result);
 }

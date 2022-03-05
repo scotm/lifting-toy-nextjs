@@ -16,6 +16,7 @@ const options: CallbackOptions = {
     session: Session,
     state: { [key: string]: any }
   ) => {
+    console.log(session);
     // console.log({ req, res, session, state });
     const where: Prisma.UserWhereUniqueInput = {
       external_id: session.user.sub,

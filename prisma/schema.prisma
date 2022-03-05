@@ -51,6 +51,8 @@ model Exercise {
   name_original          String?
   status                 String?
   description            String
+  // how_to                 String                   @default("")
+  // image_url              String?
   creation_date          DateTime                 @default(now())
   language               Language                 @relation(fields: [languageId], references: [id])
   languageId             Int
@@ -58,9 +60,11 @@ model Exercise {
   category               Category                 @relation(fields: [categoryId], references: [id])
   categoryId             Int
   variations             String?
+  // youtube_url            String                   @default("")
   muscles                Muscles[]
   equipment              Equipment[]
   TemplateExercisePieces TemplateExercisePieces[]
+  WorkoutExercisePieces  WorkoutExercisePieces[]
 }
 
 model Muscles {
@@ -71,14 +75,16 @@ model Muscles {
 }
 
 model RepetitionUnits {
-  id      Int       @id @default(autoincrement())
-  name    String
-  RepPair RepPair[]
+  id               Int                @id @default(autoincrement())
+  name             String
+  RepPair          RepPair[]
+  WorkoutSetPieces WorkoutSetPieces[]
 }
 
 model WeightUnits {
-  id   Int    @id @default(autoincrement())
-  name String
+  id               Int                @id @default(autoincrement())
+  name             String
+  WorkoutSetPieces WorkoutSetPieces[]
 }
 
 model Post {
@@ -110,6 +116,7 @@ model RepPair {
 
 model TemplateExercisePieces {
   id                Int              @id @default(autoincrement())
+  // notes             String           @default("")
   exercise          Exercise         @relation(fields: [exerciseId], references: [id])
   exerciseId        Int
   rep_pair          RepPair[]
@@ -119,10 +126,52 @@ model TemplateExercisePieces {
 
 model WorkoutTemplate {
   id     Int                      @id @default(autoincrement())
+  // notes  String                   @default("")
   name   String
   user   User                     @relation(fields: [userId], references: [id])
   userId Int
   pieces TemplateExercisePieces[]
+}
+
+model WorkoutSetPieces {
+  id                      Int                    @id @default(autoincrement())
+  weighttype              WeightUnits            @relation(fields: [weightUnitsId], references: [id])
+  weightUnitsId           Int
+  weight                  Decimal
+  reptype                 RepetitionUnits        @relation(fields: [repetitionUnitsId], references: [id])
+  repetitionUnitsId       Int
+  reps                    Int
+  WorkoutExercisePieces   WorkoutExercisePieces? @relation(fields: [workoutExercisePiecesId], references: [id])
+  workoutExercisePiecesId Int?
+}
+
+model WorkoutExercisePieces {
+  id         Int                @id @default(autoincrement())
+  exercise   Exercise           @relation(fields: [exerciseId], references: [id])
+  exerciseId Int
+  set        WorkoutSetPieces[]
+  Workout    Workout?           @relation(fields: [workoutId], references: [id])
+  workoutId  Int?
+  notes      String             @default("")
+}
+
+enum Difficulty {
+  TOOEASY
+  EASY
+  CHALLENGING
+  HARD
+  CANTCOMPLETE
+}
+
+model Workout {
+  id           Int                     @id @default(autoincrement())
+  name         String
+  date         DateTime                @default(now())
+  user         User                    @relation(fields: [userId], references: [id])
+  userId       Int
+  workoutNotes String
+  difficulty   Difficulty              @default(CHALLENGING)
+  pieces       WorkoutExercisePieces[]
 }
 
 model User {
@@ -139,4 +188,5 @@ model User {
   posts           Post[]
   profile         Profile?
   WorkoutTemplate WorkoutTemplate[]
+  Workout         Workout[]
 }
