@@ -42,11 +42,12 @@ export default withApiAuthRequired(async function handler(
   const session = getSession(req, res);
 
   if (req.method === "POST") {
+    console.log("made it here");
     // Create workout template
     if (!session) {
       return res.status(500).send("Not logged in, cannot accept user data");
     }
-
+    console.log("made it here!!!");
     // Find the user from this session data
     const user = await prisma.user.findUnique({
       where: {
@@ -56,7 +57,6 @@ export default withApiAuthRequired(async function handler(
     if (!user) {
       return res.status(500).send("There is no such user in the database");
     }
-
     const body = req.body as any;
     const { name, pieces } = body;
 

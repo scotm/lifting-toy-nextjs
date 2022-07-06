@@ -2,6 +2,15 @@ import { Prisma } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import parseID from "../../../util/parseID";
 
+export type TemplatePiecesReturnType = Prisma.PromiseReturnType<
+  typeof getTemplatePieces
+>;
+
+async function getTemplatePieces() {
+  const result = await prisma.templateExercisePieces.findMany();
+  return result;
+}
+
 export type WorkoutTemplateReturnType = Prisma.PromiseReturnType<
   typeof getWorkoutTemplate
 >;

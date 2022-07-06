@@ -14,8 +14,7 @@ const Home: NextPage = () => {
         <div
           className="absolute top-0 h-full w-full bg-cover bg-top"
           style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2134&q=80)",
+            backgroundImage: "url(/background-homepage.jpg)",
           }}
         >
           <span

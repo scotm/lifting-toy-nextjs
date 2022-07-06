@@ -8,10 +8,21 @@ import {
   fetchRepetitionUnits,
   fetchWeightUnits,
 } from "../../api-services";
-import { WorkoutTemplateReturnType } from "../../pages/api/api-types";
-import { MySelectField, MyTextField } from "../FormComponents";
+import { MySelectField, MyTextAreaField, MyTextField } from "../FormComponents";
+import * as lodash from "lodash";
+import {
+  WorkoutTemplateReturnType,
+  TemplatePiecesReturnType,
+} from "../../pages/api/api-types";
 
-interface FormInput extends Omit<WorkoutTemplateReturnType, "id" | "userId"> {}
+type T = Omit<WorkoutTemplateReturnType, "id" | "userId">;
+
+type FormInput = {
+  [K in keyof T]: T[K] extends TemplatePiecesReturnType
+    ? T[K]
+    : string | number | null | undefined;
+};
+
 type FormError = Partial<{ [day in keyof WorkoutTemplateReturnType]: string }>;
 
 interface RepPairSubset {
@@ -29,15 +40,30 @@ function validate(values: FormInput): FormError {
   if (!values.name) {
     errors.name = "Please give this workout a name";
   }
+
   if (values.pieces) {
     if (values.pieces.length === 0) {
       errors.pieces =
         "There should be at least one exercise in a workout template";
     }
+
     if (values.pieces.some((piece) => piece.rep_pair.length === 0)) {
       errors.pieces =
         "There are exercises in this template, without a specific workload. Add a working set to it.";
     }
+
+    const rep_values = values.pieces.flatMap((e) => {
+      return e.rep_pair.map((f) => {
+        if (typeof f.reps === "string") return Number.parseInt(f.reps);
+        return f.reps;
+      });
+    });
+
+    if (lodash.some(rep_values, (e) => Number.isNaN(e)))
+      errors.pieces = "Only number values are accepted";
+
+    if (lodash.some(rep_values, (e) => e <= 0))
+      errors.pieces = "Negative numbers of reps aren't allowed";
   }
   return errors;
 }
@@ -46,7 +72,7 @@ function AddSetButton(props: { ah: ArrayHelpers }) {
   const { ah } = props;
   return (
     <button
-      className="mb-2 w-full rounded-xl bg-green-600 py-2 px-6 text-white shadow-xl transition duration-300 hover:bg-green-500"
+      className="mx-1 mb-2 w-full rounded-xl bg-green-600 py-2 px-6 text-white shadow-xl transition duration-300 hover:bg-green-500"
       type="button"
       onClick={() => {
         ah.push(default_rep_pair);
@@ -61,7 +87,7 @@ function RemoveExerciseButton(props: { ah: ArrayHelpers; index: number }) {
   const { ah, index } = props;
   return (
     <button
-      className="rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400"
+      className="mx-1 rounded-xl bg-red-500 py-2 px-4 text-white shadow-xl transition duration-300 hover:bg-red-400"
       type="button"
       onClick={() => ah.remove(index)}
     >
@@ -81,13 +107,17 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
     fetchRepetitionUnits
   );
   const { data: weightunits } = useQuery("weightunits", fetchWeightUnits);
+  if (!user) {
+    router.push("/");
+  }
 
   if (!exercises || exercises.length == 0 || !repetitionunits || !weightunits) {
     return null;
   }
 
-  const initialValues: { name: string; pieces: any[] } = {
+  const initialValues: { name: string; notes: string; pieces: any[] } = {
     name: "",
+    notes: "",
     pieces: [{ exerciseId: exercises[0].id, rep_pair: [default_rep_pair] }],
   };
 
@@ -96,16 +126,21 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
       initialValues={initialValues}
       enableReinitialize={true}
       onSubmit={async (values, formikhelpers) => {
-        console.log(values);
-        const response = await axios.post(`/api/workouttemplate/`, values);
-        router.push(`/workoutTemplate/${response.data.id}`);
+        const response = await axios
+          .post(`/api/workouttemplate/`, values)
+          .catch((e) => {
+            if (e.response.status === 401)
+              alert("You are not logged in, please log in to save a workout");
+          });
+        if (response?.data?.id)
+          router.push(`/workoutTemplate/${response.data.id}`);
         formikhelpers.setSubmitting(false);
       }}
       validate={validate}
     >
       {({ isValid, values, isSubmitting }) => {
         return (
-          <Form className="grid grid-cols-4 gap-2 py-4 px-4 lg:mx-8">
+          <Form className="grid grid-cols-4 gap-4 py-4 px-4 lg:mx-8">
             <MyTextField name="name" label="Name" />
             <div className="col-span-4 mt-4 text-xl font-bold">Exercises:</div>
             <FieldArray
@@ -150,7 +185,7 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
                             {value.rep_pair.map((_, i) => (
                               <div
                                 key={`pieces.${index}.rep_pair.${i}`}
-                                className={`col-span-4 grid grid-cols-4 gap-2`}
+                                className={`col-span-4 grid grid-cols-4 gap-4`}
                               >
                                 <div className="text-center">---</div>
                                 <MySelectField
@@ -175,6 +210,13 @@ export function WorkoutTemplateForm(props: WorkoutTemplateFormProps) {
                                 </button>
                               </div>
                             ))}
+                            <div className="col-span-4">
+                              <MyTextAreaField
+                                name={`pieces.${index}.notes`}
+                                label={"Exercise Notes"}
+                                className="h-24 w-full rounded-xl shadow-xl"
+                              />
+                            </div>
                           </>
                         )}
                       />

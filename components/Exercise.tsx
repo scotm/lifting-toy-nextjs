@@ -1,3 +1,4 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import { PencilAltIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -13,6 +14,8 @@ export interface IExerciseComponentProps {
 
 export default function ExerciseComponent(props: IExerciseComponentProps) {
   const { exercise: e, edit, show_description, link_to } = props;
+  const usercontext = useUser();
+
   if (!e) return null;
   return (
     <div key={e.id} className="p-4">
@@ -26,7 +29,8 @@ export default function ExerciseComponent(props: IExerciseComponentProps) {
         <h3 className="text-3xl font-bold">{e.name}</h3>
       )}
 
-      {edit ? (
+      {/* If user is logged in - let's let them edit. */}
+      {edit && usercontext.user ? (
         <p className="float-right">
           <Link href={`/exercises/edit/${e.id}`} passHref={true}>
             <a>

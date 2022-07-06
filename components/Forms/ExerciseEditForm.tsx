@@ -1,3 +1,4 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import type { Exercise } from "@prisma/client";
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
@@ -108,6 +109,7 @@ function ExerciseForm(props: ExerciseFormProps) {
               options={categories}
             />
             <MyTextAreaField name="description" label="Description" />
+            <MyTextAreaField name="how_to" label="How To:" />
             <MyTextField name="license_author" label="Author" />
             <MySelectField
               name="licenceId"
@@ -151,6 +153,8 @@ export function ExerciseCreateForm() {
     muscles: [],
     equipment: [],
     variations: "",
+    how_to: "",
+    youtube_url: "",
   };
   return (
     <ExerciseForm
@@ -173,10 +177,15 @@ export function ExerciseEditForm(props: ExerciseEditFormProps) {
   const { data: exercise } = useQuery(["exercise", props.id], () =>
     fetchExerciseByID(props.id)
   );
+  const usercontext = useUser();
   const router = useRouter();
 
   if (!exercise) {
     return null;
+  }
+
+  if (!usercontext.user) {
+    router.push("/");
   }
 
   // A form validation function. This must return an object
@@ -197,6 +206,8 @@ export function ExerciseEditForm(props: ExerciseEditFormProps) {
       ? exercise.equipment.map((e) => e.id.toString())
       : [],
     variations: "",
+    how_to: "",
+    youtube_url: "",
   };
 
   return (

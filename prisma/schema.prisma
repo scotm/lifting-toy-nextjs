@@ -40,6 +40,7 @@ model Licence {
   short_name String
   url        String
   Exercise   Exercise[]
+  Image      Image[]
 }
 
 model Exercise {
@@ -51,8 +52,8 @@ model Exercise {
   name_original          String?
   status                 String?
   description            String
-  // how_to                 String                   @default("")
-  // image_url              String?
+  how_to                 String                   @default("")
+  images                 Image[]
   creation_date          DateTime                 @default(now())
   language               Language                 @relation(fields: [languageId], references: [id])
   languageId             Int
@@ -60,7 +61,7 @@ model Exercise {
   category               Category                 @relation(fields: [categoryId], references: [id])
   categoryId             Int
   variations             String?
-  // youtube_url            String                   @default("")
+  youtube_url            String                   @default("")
   muscles                Muscles[]
   equipment              Equipment[]
   TemplateExercisePieces TemplateExercisePieces[]
@@ -116,7 +117,7 @@ model RepPair {
 
 model TemplateExercisePieces {
   id                Int              @id @default(autoincrement())
-  // notes             String           @default("")
+  notes             String           @default("")
   exercise          Exercise         @relation(fields: [exerciseId], references: [id])
   exerciseId        Int
   rep_pair          RepPair[]
@@ -126,7 +127,7 @@ model TemplateExercisePieces {
 
 model WorkoutTemplate {
   id     Int                      @id @default(autoincrement())
-  // notes  String                   @default("")
+  notes  String                   @default("")
   name   String
   user   User                     @relation(fields: [userId], references: [id])
   userId Int
@@ -189,4 +190,15 @@ model User {
   profile         Profile?
   WorkoutTemplate WorkoutTemplate[]
   Workout         Workout[]
+}
+
+model Image {
+  id         Int       @id @default(autoincrement())
+  name       String
+  credit     String
+  licence    Licence   @relation(fields: [licenceId], references: [id])
+  licenceId  Int
+  url        String
+  Exercise   Exercise? @relation(fields: [exerciseId], references: [id])
+  exerciseId Int?
 }

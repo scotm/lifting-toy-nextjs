@@ -1,3 +1,4 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import { useQuery } from "react-query";
 import { fetchExercises } from "../api-services";
 import Exercise from "./Exercise";
@@ -19,12 +20,20 @@ export default function ExerciseList(props: IExerciseListProps) {
   } = useQuery(["exercises_list", category, search], () =>
     fetchExercises(category, search)
   );
+  const usercontext = useUser();
+
   if (isLoading) return <div>Loading...</div>;
+
   if (error) {
     return <div>There was an error getting the list of exercises.</div>;
   }
 
-  if (exercises === undefined) return <div></div>;
+  if (!exercises) return <div></div>;
+
+  // If you're not logged in, you shouldn't get to edit.
+  if (!usercontext.user) {
+    edit = false;
+  }
 
   edit = edit === undefined ? true : edit;
   show_description = show_description === undefined ? true : show_description;

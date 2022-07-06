@@ -6,7 +6,7 @@ import Layout from "../../components/PageLayout/Layout";
 export interface IShowExercisesProps {}
 
 export default function ShowExercises(props: IShowExercisesProps) {
-  // The search parameters state
+  // The search parameters state - category selection and search box
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
 

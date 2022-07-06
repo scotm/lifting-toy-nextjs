@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 function UserLoginButton() {
-  const { user } = useUser();
+  const usercontext = useUser();
+  const user = usercontext.user;
 
   return (
     <>

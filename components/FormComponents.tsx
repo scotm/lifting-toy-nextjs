@@ -34,21 +34,23 @@ export function MyTextField(props: MyTextFieldProps) {
 
 export function MyTextAreaField(props: MyTextFieldProps) {
   const { name, label, className: myclass } = props;
-  const className = myclass ?? "col-span-3 h-96 rounded-xl shadow-xl";
+  const className = myclass ?? "col-span-3 h-48 rounded-xl shadow-xl";
 
   return (
     <>
-      <ThisLabel name={name} label={label} />
+      {label ? <ThisLabel name={name} label={label} /> : null}
       <Field className={className} name={name} as="textarea"></Field>
       <ErrorMessage name={name} className="col-span-4 bg-red-200" />
     </>
   );
 }
 
+type MyOption = { id: number; name?: string; full_name?: string };
+
 interface MySelectFieldProps {
   name: string;
   label: string;
-  options: any[];
+  options: MyOption[];
   className?: string;
 }
 
